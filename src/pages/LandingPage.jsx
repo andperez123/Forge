@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Button } from '../components/ui/button';
 import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, Brain, BarChart3, Lock } from 'lucide-react';
 import { populateSampleData } from '../lib/sampleData';
 
