@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { db } from '../lib/firebase';
 import { collection, addDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { populateSampleData } from '../lib/sampleData';
 
 export function FirebaseTest() {
   const [connectionStatus, setConnectionStatus] = useState('Testing...');
@@ -66,6 +67,20 @@ export function FirebaseTest() {
     }
   };
 
+  // Add sample data to Firebase
+  const addSampleData = async () => {
+    setLoading(true);
+    try {
+      await populateSampleData();
+      alert('Sample data added successfully! Check your Strategies and Blog pages.');
+    } catch (error) {
+      console.error('Error adding sample data:', error);
+      alert(`Error adding sample data: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Load test data on mount
   useEffect(() => {
     loadTestData();
@@ -100,6 +115,13 @@ export function FirebaseTest() {
               variant="outline"
             >
               Refresh Test Data
+            </Button>
+            <Button 
+              onClick={addSampleData} 
+              disabled={loading}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {loading ? 'Adding...' : 'Add Sample Data'}
             </Button>
           </div>
 
