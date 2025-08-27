@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, BarChart3, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, Brain, BarChart3, Lock } from 'lucide-react';
+import { populateSampleData } from '../lib/sampleData';
 
 export function LandingPage() {
   const [email, setEmail] = useState('');
@@ -217,6 +218,24 @@ export function LandingPage() {
               <Button variant="outline" className="group px-8 py-4 border-2 border-border rounded-xl font-semibold text-foreground text-lg hover:border-accent hover:bg-accent/10 transition-all duration-300 flex items-center gap-2">
                 <Play className="w-5 h-5" />
                 Watch Demo
+              </Button>
+            </div>
+            
+            {/* Add Sample Data Button */}
+            <div className="flex justify-center mb-8">
+              <Button 
+                onClick={async () => {
+                  try {
+                    await populateSampleData();
+                    alert('Sample data added to Firebase! Check your Strategies and Blog pages.');
+                    window.location.reload();
+                  } catch (error) {
+                    alert('Error adding sample data: ' + error.message);
+                  }
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+              >
+                🔥 Add Sample Data to Firebase
               </Button>
             </div>
             
