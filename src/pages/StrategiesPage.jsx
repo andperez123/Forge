@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Search, Zap, ExternalLink, Star, Clock, DollarSign } from 'lucide-react';
+import { useStrategies } from '../lib/hooks/useFirebase';
 
 // Hardcoded strategies data - ready for Firebase integration
 const STRATEGIES_DATA = [

@@ -221,23 +221,7 @@ export function LandingPage() {
               </Button>
             </div>
             
-            {/* Add Sample Data Button */}
-            <div className="flex justify-center mb-8">
-              <Button 
-                onClick={async () => {
-                  try {
-                    await populateSampleData();
-                    alert('Sample data added to Firebase! Check your Strategies and Blog pages.');
-                    window.location.reload();
-                  } catch (error) {
-                    alert('Error adding sample data: ' + error.message);
-                  }
-                }}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
-              >
-                🔥 Add Sample Data to Firebase
-              </Button>
-            </div>
+
             
             {/* Trust indicators */}
             <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-sm">
