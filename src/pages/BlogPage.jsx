@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Button } from '../components/ui/button';
 import { Search, Calendar, Clock, User, TrendingUp, BookOpen, ArrowRight, Tag } from 'lucide-react';
+import { useBlogPosts } from '../lib/hooks/useFirebase';
 
 // Hardcoded blog posts data - ready for Firebase integration
 const BLOG_POSTS = [
