@@ -677,6 +677,7 @@ export function BlogPage() {
           </Card>
         </div>
       </div>
+    </div>
     </>
   );
 }
