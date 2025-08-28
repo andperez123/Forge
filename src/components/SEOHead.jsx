@@ -86,9 +86,9 @@ export function BlogPostSEO({ post }) {
     "dateModified": post.updatedAt,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://forge.ai/blog/${post.slug}`
+      "@id": `https://forgedefi.com/blog/${post.slug}`
     },
-    "image": post.imageUrl ? `https://forge.ai${post.imageUrl}` : "https://forge.ai/og-image.jpg",
+    "image": post.imageUrl ? `https://forgedefi.com${post.imageUrl}` : "https://forgedefi.com/og-image.jpg",
     "keywords": post.tags?.join(', ') || 'DeFi, cryptocurrency, blockchain',
     "articleSection": post.category,
     "wordCount": post.content?.length || 0
@@ -99,8 +99,8 @@ export function BlogPostSEO({ post }) {
       title={post.title}
       description={post.excerpt}
       keywords={post.tags || []}
-      canonicalUrl={`https://forge.ai/blog/${post.slug}`}
-      ogImage={post.imageUrl ? `https://forge.ai${post.imageUrl}` : "https://forge.ai/og-image.jpg"}
+      canonicalUrl={`https://forgedefi.com/blog/${post.slug}`}
+      ogImage={post.imageUrl ? `https://forgedefi.com${post.imageUrl}` : "https://forgedefi.com/og-image.jpg"}
       ogType="article"
       structuredData={structuredData}
     />
@@ -114,13 +114,13 @@ export function BlogListingSEO({ posts = [] }) {
     "@type": "Blog",
     "name": "Forge DeFi Platform Blog",
     "description": "Latest insights, strategies, and guides for DeFi yield optimization and blockchain technology.",
-    "url": "https://forge.ai/blog",
+    "url": "https://forgedefi.com/blog",
     "publisher": {
       "@type": "Organization",
       "name": "Forge DeFi Platform",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://forge.ai/logo.png"
+        "url": "https://forgedefi.com/logo.png"
       }
     },
     "blogPost": posts.slice(0, 10).map(post => ({
@@ -132,7 +132,7 @@ export function BlogListingSEO({ posts = [] }) {
         "name": post.author
       },
       "datePublished": post.publishedAt,
-      "url": `https://forge.ai/blog/${post.slug}`
+      "url": `https://forgedefi.com/blog/${post.slug}`
     }))
   };
 
@@ -141,8 +141,8 @@ export function BlogListingSEO({ posts = [] }) {
       title="Blog - DeFi Strategies & Insights"
       description="Discover the latest DeFi strategies, yield farming techniques, and blockchain insights. Expert analysis and guides for maximizing your crypto returns."
       keywords={['DeFi blog', 'cryptocurrency strategies', 'yield farming guides', 'blockchain insights', 'DeFi education']}
-      canonicalUrl="https://forge.ai/blog"
-      ogImage="https://forge.ai/blog-og-image.jpg"
+      canonicalUrl="https://forgedefi.com/blog"
+      ogImage="https://forgedefi.com/blog-og-image.jpg"
       structuredData={structuredData}
     />
   );
