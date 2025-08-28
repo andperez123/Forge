@@ -9,6 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { Plus, X, Save, FileText, Zap } from 'lucide-react';
 import { createStrategy } from '../lib/strategiesService';
 import { createBlogPost } from '../lib/blogService';
+import { AdminAuth } from '../components/AdminAuth';
 
 export function AdminPage() {
   const [activeTab, setActiveTab] = useState('strategy');
@@ -212,17 +213,18 @@ export function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
-            <span className="text-foreground">Admin </span>
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Dashboard</span>
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Create and manage strategies and blog posts
-          </p>
-        </div>
+    <AdminAuth>
+      <div className="min-h-screen bg-background pt-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4">
+              <span className="text-foreground">Admin </span>
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Dashboard</span>
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Create and manage strategies and blog posts
+            </p>
+          </div>
 
         {/* Tab Navigation */}
         <div className="flex gap-4 mb-8">
