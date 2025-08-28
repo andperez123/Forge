@@ -620,5 +620,6 @@ Your content goes here..."
         )}
       </div>
     </div>
+    </AdminAuth>
   );
 }
