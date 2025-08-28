@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Button } from '../components/ui/button';
 import { Search, Calendar, Clock, User, TrendingUp, BookOpen, ArrowRight, Tag } from 'lucide-react';
 import { useBlogPosts } from '../lib/hooks/useFirebase';
+import { BlogListingSEO } from '../components/SEOHead';
 
 // Hardcoded blog posts data - ready for Firebase integration
 const BLOG_POSTS = [
@@ -509,9 +510,10 @@ export function BlogPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      {/* SEO Meta Tags would be handled by React Helmet or similar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <>
+      <BlogListingSEO posts={posts || []} />
+      <div className="min-h-screen bg-background pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
@@ -675,7 +677,7 @@ export function BlogPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -10,6 +10,7 @@ import { BlogPage } from './pages/BlogPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
+import { SEOHead } from './components/SEOHead';
 
 import './App.css';
 
