@@ -180,16 +180,20 @@ const STRATEGIES_DATA = [
 ];
 
 export function StrategiesPage() {
-  const [strategies] = useState(STRATEGIES_DATA);
-  const [filteredStrategies, setFilteredStrategies] = useState(STRATEGIES_DATA);
+  const { strategies, loading: isLoading, error } = useStrategies();
+  const [filteredStrategies, setFilteredStrategies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRisk, setSelectedRisk] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('apy');
-  const [isLoading] = useState(false);
 
   // Filter and search logic
   useEffect(() => {
+    if (!strategies || strategies.length === 0) {
+      setFilteredStrategies([]);
+      return;
+    }
+
     let filtered = strategies;
 
     // Search filter
@@ -197,13 +201,13 @@ export function StrategiesPage() {
       filtered = filtered.filter(strategy =>
         strategy.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         strategy.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        strategy.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        (strategy.tags && strategy.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
       );
     }
 
     // Risk filter
     if (selectedRisk !== 'all') {
-      filtered = filtered.filter(strategy => strategy.risk.toLowerCase() === selectedRisk);
+      filtered = filtered.filter(strategy => strategy.risk && strategy.risk.toLowerCase() === selectedRisk);
     }
 
     // Category filter
@@ -215,14 +219,14 @@ export function StrategiesPage() {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'apy':
-          return b.apy - a.apy;
+          return (b.apy || 0) - (a.apy || 0);
         case 'tvl':
-          return b.tvl - a.tvl;
+          return (b.tvl || 0) - (a.tvl || 0);
         case 'risk':
           const riskOrder = { 'Low': 1, 'Medium': 2, 'High': 3 };
-          return riskOrder[a.risk] - riskOrder[b.risk];
+          return (riskOrder[a.risk] || 0) - (riskOrder[b.risk] || 0);
         case 'name':
-          return a.name.localeCompare(b.name);
+          return (a.name || '').localeCompare(b.name || '');
         default:
           return 0;
       }
@@ -417,18 +421,25 @@ export function StrategiesPage() {
             </div>
           </div>
 
-          {/* Results count */}
-          <div className="flex items-center justify-between">
-            <p className="text-muted-foreground">
-              Showing {filteredStrategies.length} of {strategies.length} strategies
-            </p>
-            <Link to="/strategy-builder">
-              <Button variant="outline" className="flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                Build Strategy
-              </Button>
-            </Link>
+                  {/* Error Display */}
+        {error && (
+          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-red-400">Error loading strategies: {error}</p>
           </div>
+        )}
+
+        {/* Results count */}
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">
+            Showing {filteredStrategies.length} of {strategies?.length || 0} strategies
+          </p>
+          <Link to="/strategy-builder">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Zap className="w-4 h-4" />
+              Build Strategy
+            </Button>
+          </Link>
+        </div>
         </div>
 
         {/* Featured Strategies */}

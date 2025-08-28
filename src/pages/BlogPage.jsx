@@ -382,20 +382,24 @@ Liquid staking represents a fundamental shift in how we approach staking, offeri
 ];
 
 export function BlogPage() {
-  const [posts] = useState(BLOG_POSTS);
-  const [filteredPosts, setFilteredPosts] = useState(BLOG_POSTS);
+  const { blogPosts: posts, loading: isLoading, error } = useBlogPosts();
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
-  const [isLoading] = useState(false);
 
   // Get unique categories and tags
-  const categories = ['all', ...new Set(posts.map(post => post.category))];
-  const allTags = posts.flatMap(post => post.tags);
+  const categories = ['all', ...new Set(posts?.map(post => post.category) || [])];
+  const allTags = posts?.flatMap(post => post.tags || []) || [];
   const uniqueTags = ['all', ...new Set(allTags)];
 
   // Filter and search logic
   useEffect(() => {
+    if (!posts || posts.length === 0) {
+      setFilteredPosts([]);
+      return;
+    }
+
     let filtered = posts;
 
     // Search filter
@@ -403,7 +407,7 @@ export function BlogPage() {
       filtered = filtered.filter(post =>
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))) ||
         post.author.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -415,7 +419,7 @@ export function BlogPage() {
 
     // Tag filter
     if (selectedTag !== 'all') {
-      filtered = filtered.filter(post => post.tags.includes(selectedTag));
+      filtered = filtered.filter(post => post.tags && post.tags.includes(selectedTag));
     }
 
     // Sort by publish date (newest first)
@@ -562,10 +566,17 @@ export function BlogPage() {
             </div>
           </div>
 
+          {/* Error Display */}
+          {error && (
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-red-400">Error loading blog posts: {error}</p>
+            </div>
+          )}
+
           {/* Results count */}
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground">
-              Showing {filteredPosts.length} of {posts.length} articles
+              Showing {filteredPosts.length} of {posts?.length || 0} articles
             </p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <TrendingUp className="w-4 h-4" />
