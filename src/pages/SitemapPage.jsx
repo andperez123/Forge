@@ -15,12 +15,27 @@ export function SitemapPage() {
         blogPostsCount: blogPosts.length 
       });
       
-      const sitemapData = generateSitemapData(strategies, blogPosts);
-      const xml = generateSitemapXML(sitemapData);
-      setSitemapXML(xml);
+      // Debug: Log sample data to see structure
+      if (strategies.length > 0) {
+        console.log('Sample strategy:', strategies[0]);
+      }
+      if (blogPosts.length > 0) {
+        console.log('Sample blog post:', blogPosts[0]);
+      }
       
-      // Set content type header for XML
-      document.title = 'Sitemap';
+      try {
+        const sitemapData = generateSitemapData(strategies, blogPosts);
+        console.log('Generated sitemap data:', sitemapData);
+        
+        const xml = generateSitemapXML(sitemapData);
+        setSitemapXML(xml);
+        
+        // Set content type header for XML
+        document.title = 'Sitemap';
+      } catch (error) {
+        console.error('Error generating sitemap:', error);
+        setSitemapXML('Error generating sitemap: ' + error.message);
+      }
     }
   }, [strategies, blogPosts, strategiesLoading, blogLoading]);
 

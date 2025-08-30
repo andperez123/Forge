@@ -3,6 +3,44 @@ export const generateSitemapData = (strategies = [], blogPosts = []) => {
   const baseUrl = 'https://forgedefi.com';
   const currentDate = new Date().toISOString().split('T')[0];
   
+  // Helper function to safely convert Firebase timestamps
+  const getSafeDate = (timestamp) => {
+    if (!timestamp) return currentDate;
+    
+    try {
+      // Handle Firebase Timestamp objects
+      if (timestamp && typeof timestamp.toDate === 'function') {
+        return timestamp.toDate().toISOString().split('T')[0];
+      }
+      
+      // Handle regular Date objects or date strings
+      if (timestamp instanceof Date) {
+        return timestamp.toISOString().split('T')[0];
+      }
+      
+      // Handle string dates
+      if (typeof timestamp === 'string') {
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          return date.toISOString().split('T')[0];
+        }
+      }
+      
+      // Handle timestamp numbers
+      if (typeof timestamp === 'number') {
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          return date.toISOString().split('T')[0];
+        }
+      }
+      
+      return currentDate;
+    } catch (error) {
+      console.warn('Error converting timestamp:', timestamp, error);
+      return currentDate;
+    }
+  };
+  
   // Static pages
   const staticPages = [
     {
@@ -40,7 +78,7 @@ export const generateSitemapData = (strategies = [], blogPosts = []) => {
   // Strategy pages
   const strategyPages = strategies.map(strategy => ({
     url: `${baseUrl}/strategies/${strategy.id}`,
-    lastmod: strategy.updatedAt ? new Date(strategy.updatedAt).toISOString().split('T')[0] : currentDate,
+    lastmod: getSafeDate(strategy.updatedAt || strategy.createdAt),
     changefreq: 'weekly',
     priority: '0.8'
   }));
@@ -48,7 +86,7 @@ export const generateSitemapData = (strategies = [], blogPosts = []) => {
   // Blog post pages
   const blogPages = blogPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastmod: post.updatedAt ? new Date(post.updatedAt).toISOString().split('T')[0] : currentDate,
+    lastmod: getSafeDate(post.updatedAt || post.publishedAt || post.createdAt),
     changefreq: 'monthly',
     priority: '0.7'
   }));
