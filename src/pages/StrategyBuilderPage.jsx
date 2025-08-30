@@ -1,488 +1,268 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-
-import { Badge } from '../components/ui/badge';
-import { Textarea } from '../components/ui/textarea';
-import { Brain, Zap, Target, TrendingUp, Shield, AlertTriangle, CheckCircle, Loader2, Clock, BarChart3 } from 'lucide-react';
+import { Brain, Zap, Target, TrendingUp, Shield, Rocket, Sparkles, ArrowRight, CheckCircle, BarChart3, Clock, Users } from 'lucide-react';
 
 export function StrategyBuilderPage() {
-  const [searchParams] = useSearchParams();
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedStrategy, setGeneratedStrategy] = useState(null);
-  const [formData, setFormData] = useState({
-    investmentAmount: 10000,
-    riskTolerance: 'medium',
-    timeHorizon: '6months',
-    preferredChains: [],
-    assetTypes: [],
-    goals: '',
-    excludeProtocols: ''
-  });
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Pre-fill form if coming from a strategy template
+  // Animation on scroll
   useEffect(() => {
-    const strategyId = searchParams.get('strategy');
-    if (strategyId) {
-      // In a real app, this would fetch the strategy details
-      // For now, we'll just set some defaults
-      setFormData(prev => ({
-        ...prev,
-        goals: `Optimize the ${strategyId} strategy for my portfolio`
-      }));
-    }
-  }, [searchParams]);
+    setIsVisible(true);
+  }, []);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleArrayChange = (field, value, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: checked 
-        ? [...prev[field], value]
-        : prev[field].filter(item => item !== value)
-    }));
-  };
-
-  const generateStrategy = async () => {
-    setIsGenerating(true);
-    
-    // Simulate strategy analysis
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Mock analyzed strategy based on form data
-    const mockStrategy = {
-      name: `Custom ${formData.riskTolerance.charAt(0).toUpperCase() + formData.riskTolerance.slice(1)}-Risk Strategy`,
-      description: `Optimized strategy tailored to your ${formData.riskTolerance} risk tolerance and $${formData.investmentAmount.toLocaleString()} investment`,
-      estimatedAPY: formData.riskTolerance === 'low' ? 15.2 : formData.riskTolerance === 'medium' ? 28.7 : 42.3,
-      riskScore: formData.riskTolerance === 'low' ? 3 : formData.riskTolerance === 'medium' ? 6 : 8,
-      timeToSetup: '8 minutes',
-      chains: formData.preferredChains.length > 0 ? formData.preferredChains : ['Ethereum', 'Arbitrum'],
-      steps: [
-        {
-          id: 1,
-          action: 'Initial Deposit',
-          description: `Deposit ${formData.assetTypes.includes('stablecoins') ? 'USDC' : 'ETH'} to primary protocol`,
-          protocol: formData.riskTolerance === 'low' ? 'Aave' : 'Compound',
-          estimatedGas: '$12-25',
-          timeRequired: '2 minutes'
-        },
-        {
-          id: 2,
-          action: 'Yield Optimization',
-          description: 'Stake deposited assets for base yield generation',
-          protocol: 'Yearn Finance',
-          estimatedGas: '$8-18',
-          timeRequired: '1 minute'
-        },
-        {
-          id: 3,
-          action: 'Liquidity Provision',
-          description: 'Provide liquidity to high-yield pools for additional rewards',
-          protocol: 'Curve Finance',
-          estimatedGas: '$15-30',
-          timeRequired: '3 minutes'
-        },
-        {
-          id: 4,
-          action: 'Reward Compounding',
-          description: 'Auto-compound rewards for maximum yield efficiency',
-          protocol: 'Convex Finance',
-          estimatedGas: '$5-12',
-          timeRequired: '2 minutes'
-        }
-      ],
-      risks: [
-        {
-          type: 'Smart Contract Risk',
-          level: formData.riskTolerance === 'low' ? 'Low' : 'Medium',
-          description: 'Risk of bugs or exploits in protocol smart contracts'
-        },
-        {
-          type: 'Impermanent Loss',
-          level: formData.riskTolerance === 'high' ? 'High' : 'Low',
-          description: 'Potential loss from providing liquidity to volatile pairs'
-        },
-        {
-          type: 'Market Risk',
-          level: formData.riskTolerance === 'low' ? 'Low' : formData.riskTolerance === 'medium' ? 'Medium' : 'High',
-          description: 'Risk from overall market volatility and price movements'
-        }
-      ],
-      expectedReturns: {
-        conservative: (formData.investmentAmount * 0.12).toLocaleString(),
-        realistic: (formData.investmentAmount * (formData.riskTolerance === 'low' ? 0.152 : formData.riskTolerance === 'medium' ? 0.287 : 0.423)).toLocaleString(),
-        optimistic: (formData.investmentAmount * (formData.riskTolerance === 'low' ? 0.18 : formData.riskTolerance === 'medium' ? 0.35 : 0.52)).toLocaleString()
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    if (email) {
+      try {
+        // Store email in Firebase Firestore
+        const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
+        const { db } = await import('../lib/firebase');
+        
+        await addDoc(collection(db, 'waitlist'), {
+          email: email,
+          createdAt: serverTimestamp(),
+          source: 'builder_page',
+          status: 'active'
+        });
+        
+        setIsSubmitted(true);
+        setEmail(''); // Clear the input
+        console.log('Email added to waitlist:', email);
+      } catch (error) {
+        console.error('Error adding email to waitlist:', error);
+        // Still show success to user even if Firebase fails
+        setIsSubmitted(true);
       }
-    };
-    
-    setGeneratedStrategy(mockStrategy);
-    setIsGenerating(false);
-  };
-
-  const deployStrategy = () => {
-    // In a real app, this would integrate with wallet and execute transactions
-    alert('Strategy deployment would integrate with your wallet here!');
-  };
-
-  const getRiskColor = (level) => {
-    switch (level.toLowerCase()) {
-      case 'low': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
-      case 'high': return 'text-red-400';
-      default: return 'text-gray-400';
     }
   };
+
+  const FeatureCard = ({ icon: Icon, title, description, delay = 0 }) => (
+    <div 
+      className="group relative bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105"
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+        <Icon className="w-8 h-8" />
+      </div>
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            <span className="text-foreground">Strategy </span>
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Analyzer</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Analyze and understand DeFi strategies based on your preferences. Input your parameters to see how different strategies would perform for your portfolio.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Strategy Configuration */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" />
-                  Investment Parameters
-                </CardTitle>
-                <CardDescription>
-                  Configure your investment amount and preferences
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Investment Amount */}
-                <div className="space-y-2">
-                  <Label htmlFor="amount">Investment Amount (USD)</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    value={formData.investmentAmount}
-                    onChange={(e) => handleInputChange('investmentAmount', parseInt(e.target.value) || 0)}
-                    placeholder="10000"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    Minimum: $100 • Recommended: $1,000+
-                  </p>
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 py-20 pt-32">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            {/* Logo/Brand */}
+            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-gray-100 rounded-full border border-gray-200">
+                <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5" />
                 </div>
-
-                {/* Risk Tolerance */}
-                <div className="space-y-2">
-                  <Label>Risk Tolerance</Label>
-                  <Select value={formData.riskTolerance} onValueChange={(value) => handleInputChange('riskTolerance', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low Risk (5-20% APY)</SelectItem>
-                      <SelectItem value="medium">Medium Risk (20-40% APY)</SelectItem>
-                      <SelectItem value="high">High Risk (40%+ APY)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Time Horizon */}
-                <div className="space-y-2">
-                  <Label>Investment Time Horizon</Label>
-                  <Select value={formData.timeHorizon} onValueChange={(value) => handleInputChange('timeHorizon', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1month">1 Month</SelectItem>
-                      <SelectItem value="3months">3 Months</SelectItem>
-                      <SelectItem value="6months">6 Months</SelectItem>
-                      <SelectItem value="1year">1 Year</SelectItem>
-                      <SelectItem value="longterm">Long Term (1+ Years)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-primary" />
-                  Chain & Asset Preferences
-                </CardTitle>
-                <CardDescription>
-                  Select your preferred blockchains and asset types
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Preferred Chains */}
-                <div className="space-y-3">
-                  <Label>Preferred Blockchains</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {['Ethereum', 'Arbitrum', 'Optimism', 'Polygon', 'Avalanche', 'BSC'].map((chain) => (
-                      <label key={chain} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.preferredChains.includes(chain)}
-                          onChange={(e) => handleArrayChange('preferredChains', chain, e.target.checked)}
-                          className="rounded border-border"
-                        />
-                        <span className="text-sm">{chain}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Asset Types */}
-                <div className="space-y-3">
-                  <Label>Asset Types</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {['ETH', 'BTC', 'Stablecoins', 'DeFi Tokens', 'Alt Coins', 'LP Tokens'].map((asset) => (
-                      <label key={asset} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.assetTypes.includes(asset.toLowerCase())}
-                          onChange={(e) => handleArrayChange('assetTypes', asset.toLowerCase(), e.target.checked)}
-                          className="rounded border-border"
-                        />
-                        <span className="text-sm">{asset}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-primary" />
-                  Strategy Analysis
-                </CardTitle>
-                <CardDescription>
-                  Describe your specific goals and any constraints
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="goals">Investment Goals</Label>
-                  <Textarea
-                    id="goals"
-                    placeholder="e.g., Maximize yield while maintaining low risk, focus on stablecoin strategies, avoid impermanent loss..."
-                    value={formData.goals}
-                    onChange={(e) => handleInputChange('goals', e.target.value)}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="exclude">Protocols to Exclude (Optional)</Label>
-                  <Input
-                    id="exclude"
-                    placeholder="e.g., Compound, Aave..."
-                    value={formData.excludeProtocols}
-                    onChange={(e) => handleInputChange('excludeProtocols', e.target.value)}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Button 
-              onClick={generateStrategy} 
-              disabled={isGenerating}
-              className="w-full py-6 text-lg bg-gradient-to-r from-primary to-accent hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Analyzing Strategy...
-                </>
-              ) : (
-                <>
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  Analyze Strategy
-                </>
-              )}
-            </Button>
-          </div>
-
-          {/* Generated Strategy */}
-          <div className="space-y-6">
-            {isGenerating ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center animate-pulse">
-                    <BarChart3 className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Analyzing your strategy...</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Evaluating 1000+ protocols across multiple chains
-                  </p>
-                  <div className="space-y-2">
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-primary to-accent rounded-full animate-pulse" style={{ width: '60%' }} />
-                    </div>
-                    <p className="text-sm text-muted-foreground">Processing market data and calculating yields...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : generatedStrategy ? (
-              <div className="space-y-6">
-                {/* Strategy Overview */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-400" />
-                      {generatedStrategy.name}
-                    </CardTitle>
-                    <CardDescription>
-                      {generatedStrategy.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="text-center p-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg border border-primary/30">
-                        <div className="text-3xl font-bold text-primary">{generatedStrategy.estimatedAPY}%</div>
-                        <div className="text-sm text-muted-foreground">Estimated APY</div>
-                      </div>
-                      <div className="text-center p-4 bg-muted/50 rounded-lg">
-                        <div className="text-2xl font-bold text-foreground">{generatedStrategy.riskScore}/10</div>
-                        <div className="text-sm text-muted-foreground">Risk Score</div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span>{generatedStrategy.timeToSetup} setup</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                        <span>{generatedStrategy.chains.length} chains</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Expected Returns */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-primary" />
-                      Expected Returns (1 Year)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Conservative:</span>
-                        <span className="font-semibold text-green-400">${generatedStrategy.expectedReturns.conservative}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Realistic:</span>
-                        <span className="font-semibold text-primary">${generatedStrategy.expectedReturns.realistic}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Optimistic:</span>
-                        <span className="font-semibold text-accent">${generatedStrategy.expectedReturns.optimistic}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Strategy Steps */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Implementation Steps</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {generatedStrategy.steps.map((step, index) => (
-                        <div key={step.id} className="flex gap-4 p-4 bg-muted/50 rounded-lg">
-                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                            {step.id}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-foreground">{step.action}</h4>
-                            <p className="text-sm text-muted-foreground mb-2">{step.description}</p>
-                            <div className="flex gap-4 text-xs text-muted-foreground">
-                              <span>Protocol: {step.protocol}</span>
-                              <span>Gas: {step.estimatedGas}</span>
-                              <span>Time: {step.timeRequired}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Risk Assessment */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                      Risk Assessment
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {generatedStrategy.risks.map((risk, index) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                          <div>
-                            <div className="font-medium text-foreground">{risk.type}</div>
-                            <div className="text-sm text-muted-foreground">{risk.description}</div>
-                          </div>
-                          <Badge className={`${getRiskColor(risk.level)} border-current`}>
-                            {risk.level}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Deploy Button */}
-                <Button 
-                  onClick={deployStrategy}
-                  className="w-full py-6 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:shadow-2xl hover:shadow-green-500/25 transition-all duration-300"
-                >
-                  <Zap className="w-5 h-5 mr-2" />
-                  Deploy Strategy
-                </Button>
+                <span className="text-gray-900 font-bold text-lg">Forge</span>
               </div>
-            ) : (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
-                    <Brain className="w-8 h-8 text-muted-foreground" />
+            </div>
+            
+            {/* Main headline */}
+            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <h1 className="text-7xl md:text-9xl font-black mb-8 leading-tight">
+                <span className="text-gray-900">
+                  Strategy
+                </span>
+                <br />
+                <span className="text-orange-500">
+                  Builder
+                </span>
+              </h1>
+            </div>
+            
+            <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <p className="text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed">
+                Build custom DeFi strategies with AI-powered insights. Coming soon with advanced automation and real-time optimization.
+              </p>
+            </div>
+            
+            {/* Coming Soon Badge */}
+            <div className={`flex justify-center mb-16 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="inline-flex items-center gap-3 px-8 py-4 bg-orange-500 text-white rounded-full font-bold text-xl">
+                <Rocket className="w-6 h-6" />
+                Coming Q2 2024
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sign Up for Early Access */}
+      <section className="py-32 px-4 relative bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-white border border-gray-200 rounded-3xl p-12 shadow-sm">
+            {!isSubmitted ? (
+              <>
+                <h2 className="text-5xl font-bold mb-6">
+                  <span className="text-gray-900">Get </span>
+                  <span className="text-orange-500">Early Access</span>
+                </h2>
+                <p className="text-2xl text-gray-600 mb-12 max-w-3xl mx-auto">
+                  Be among the first to build and deploy custom DeFi strategies. Join the waitlist for exclusive beta access and strategy automation features.
+                </p>
+                
+                <form onSubmit={handleEmailSubmit} className="space-y-6 max-w-md mx-auto">
+                  <div className="relative">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-8 py-6 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 text-lg"
+                      required
+                    />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Ready to Generate</h3>
-                  <p className="text-muted-foreground">
-                    Configure your preferences and click "Generate AI Strategy" to create your custom DeFi strategy.
-                  </p>
-                </CardContent>
-              </Card>
+                  <Button 
+                    type="submit" 
+                    className="w-full py-6 bg-black hover:bg-gray-800 rounded-2xl font-bold text-white text-xl transition-all duration-300 hover:scale-105"
+                  >
+                    Join Waitlist
+                  </Button>
+                </form>
+                
+                <div className="flex items-center justify-center gap-8 mt-8 text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    <span>Exclusive beta access</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    <span>Priority support</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-8">
+                <div className="w-24 h-24 mx-auto bg-green-500 text-white rounded-full flex items-center justify-center">
+                  <Shield className="w-12 h-12" />
+                </div>
+                <h3 className="text-4xl font-bold text-gray-900">You're In!</h3>
+                <p className="text-2xl text-gray-600">
+                  Welcome to the Strategy Builder waitlist. We'll notify you as soon as the beta is ready.
+                </p>
+                <div className="text-orange-500 font-bold text-xl">
+                  Expected beta: Q2 2024
+                </div>
+              </div>
             )}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Features Preview */}
+      <section className="py-32 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-gray-900">What's </span>
+              <span className="text-orange-500">Coming</span>
+            </h2>
+            <p className="text-2xl text-gray-600">Advanced features for building and deploying DeFi strategies</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={Brain}
+              title="AI Strategy Builder"
+              description="Create custom strategies with AI-powered recommendations based on your risk profile and market conditions."
+              delay={0.1}
+            />
+            <FeatureCard
+              icon={Zap}
+              title="One-Click Deployment"
+              description="Deploy your strategies across multiple chains with a single click. No more manual transaction management."
+              delay={0.2}
+            />
+            <FeatureCard
+              icon={TrendingUp}
+              title="Real-Time Optimization"
+              description="Automatically rebalance and optimize your strategies based on market conditions and yield opportunities."
+              delay={0.3}
+            />
+            <FeatureCard
+              icon={Shield}
+              title="Risk Management"
+              description="Advanced risk assessment and automatic position adjustments to protect your capital."
+              delay={0.4}
+            />
+            <FeatureCard
+              icon={BarChart3}
+              title="Performance Analytics"
+              description="Detailed analytics and performance tracking for all your deployed strategies."
+              delay={0.5}
+            />
+            <FeatureCard
+              icon={Clock}
+              title="Automated Execution"
+              description="Set up automated triggers and schedules for strategy execution and rebalancing."
+              delay={0.6}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Preview */}
+      <section className="py-32 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-gray-900">How the </span>
+              <span className="text-orange-500">Builder Works</span>
+            </h2>
+            <p className="text-2xl text-gray-600">Simple 3-step process to create and deploy strategies</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6">1</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Define Parameters</h3>
+              <p className="text-gray-600">Set your investment amount, risk tolerance, preferred chains, and goals.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6">2</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">AI Analysis</h3>
+              <p className="text-gray-600">Our AI analyzes thousands of protocols to create your optimal strategy.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6">3</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Deploy & Monitor</h3>
+              <p className="text-gray-600">Deploy with one click and monitor performance in real-time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-32 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-white border border-gray-200 rounded-3xl p-12 shadow-sm">
+            <h2 className="text-5xl font-bold mb-6">
+              <span className="text-gray-900">Ready to Build </span>
+              <span className="text-orange-500">Your Strategy</span>
+              <span className="text-gray-900">?</span>
+            </h2>
+            <p className="text-2xl text-gray-600 mb-8">
+              Join the waitlist and be the first to experience the future of DeFi strategy building.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Rocket className="w-8 h-8 text-orange-500" />
+              <span className="text-orange-500 font-bold text-xl">Limited beta spots available</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
