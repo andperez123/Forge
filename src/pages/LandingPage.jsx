@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, Brain, BarChart3, Lock } from 'lucide-react';
+import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, Brain, BarChart3, Lock, Star, Users, Globe, Award } from 'lucide-react';
 import { populateSampleData } from '../lib/sampleData';
 
 export function LandingPage() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef(null);
 
   // Mouse tracking for interactive effects
@@ -29,6 +30,11 @@ export function LandingPage() {
     }
   }, []);
 
+  // Animation on scroll
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   const handleEmailSubmit = (e) => {
     e.preventDefault();
     if (email) {
@@ -38,34 +44,46 @@ export function LandingPage() {
 
   const AnimatedBackground = () => (
     <div className="absolute inset-0 overflow-hidden">
+      {/* Main gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
+      
       {/* Animated gradient orbs */}
       <div 
-        className="absolute w-96 h-96 rounded-full opacity-20 blur-3xl animate-pulse"
+        className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-3xl animate-pulse"
         style={{
-          background: 'radial-gradient(circle, #FF6B35 0%, transparent 70%)',
+          background: 'radial-gradient(circle, #FF6B35 0%, #FF8E53 20%, transparent 70%)',
           left: `${mousePosition.x}%`,
           top: `${mousePosition.y}%`,
           transform: 'translate(-50%, -50%)',
-          transition: 'all 0.3s ease-out',
+          transition: 'all 0.5s ease-out',
         }}
       />
       <div 
-        className="absolute w-64 h-64 rounded-full opacity-15 blur-2xl animate-pulse"
+        className="absolute w-[600px] h-[600px] rounded-full opacity-25 blur-2xl animate-pulse"
         style={{
-          background: 'radial-gradient(circle, #D4AF37 0%, transparent 70%)',
+          background: 'radial-gradient(circle, #D4AF37 0%, #FFD700 20%, transparent 70%)',
           left: `${100 - mousePosition.x}%`,
           top: `${100 - mousePosition.y}%`,
           transform: 'translate(-50%, -50%)',
-          transition: 'all 0.5s ease-out',
+          transition: 'all 0.7s ease-out',
           animationDelay: '1s',
         }}
       />
       
+      {/* Grid pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="grid grid-cols-20 grid-rows-20 h-full w-full">
+          {[...Array(400)].map((_, i) => (
+            <div key={i} className="border border-white/10" />
+          ))}
+        </div>
+      </div>
+      
       {/* Floating particles */}
-      {[...Array(20)].map((_, i) => (
+      {[...Array(50)].map((_, i) => (
         <div
           key={i}
-          className="absolute w-1 h-1 bg-accent rounded-full opacity-40 animate-float"
+          className="absolute w-1 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-60 animate-float"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -77,346 +95,374 @@ export function LandingPage() {
     </div>
   );
 
-  const ModernStrategyVisualization = () => (
-    <div className="relative w-full h-80 bg-gradient-to-br from-card to-muted rounded-2xl p-8 overflow-hidden">
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="grid grid-cols-8 grid-rows-6 h-full w-full">
-          {[...Array(48)].map((_, i) => (
-            <div key={i} className="border border-accent/20" />
-          ))}
-        </div>
-      </div>
-      
-      {/* DeFi Protocol Network visualization */}
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <div className="relative">
-          {/* Central DeFi hub */}
-          <div className="w-20 h-20 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center animate-pulse-slow">
-            <TrendingUp className="w-10 h-10 text-white" />
+  const FloatingCard = ({ children, delay = 0, className = "" }) => (
+    <div 
+      className={`animate-float ${className}`}
+      style={{ animationDelay: `${delay}s` }}
+    >
+      {children}
+    </div>
+  );
+
+  const StrategyCard = ({ title, apy, risk, chains, protocols, featured = false }) => (
+    <div className={`group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 hover:border-orange-500/50 transition-all duration-500 hover:transform hover:scale-105 ${featured ? 'ring-2 ring-orange-500/30' : ''}`}>
+      {featured && (
+        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+          <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+            <Star className="w-3 h-3" />
+            Featured
           </div>
-          
-          {/* Orbiting protocol nodes */}
-          {[
-            { label: 'Lido', angle: 0, distance: 80, delay: '0s' },
-            { label: 'Curve', angle: 72, distance: 80, delay: '0.5s' },
-            { label: 'Aave', angle: 144, distance: 80, delay: '1s' },
-            { label: 'Uniswap', angle: 216, distance: 80, delay: '1.5s' },
-            { label: 'Compound', angle: 288, distance: 80, delay: '2s' },
-          ].map((node, i) => (
-            <div
-              key={i}
-              className="absolute w-12 h-12 bg-card border-2 border-accent rounded-full flex items-center justify-center text-xs font-semibold text-accent animate-orbit"
-              style={{
-                left: '50%',
-                top: '50%',
-                transform: `translate(-50%, -50%) rotate(${node.angle}deg) translateX(${node.distance}px) rotate(-${node.angle}deg)`,
-                animationDelay: node.delay,
-              }}
-            >
-              {node.label}
-            </div>
-          ))}
-          
-          {/* Connecting lines */}
-          <svg className="absolute inset-0 w-full h-full" style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '50%' }}>
-            {[0, 72, 144, 216, 288].map((angle, i) => (
-              <line
-                key={i}
-                x1="0"
-                y1="0"
-                x2={Math.cos((angle * Math.PI) / 180) * 80}
-                y2={Math.sin((angle * Math.PI) / 180) * 80}
-                stroke="url(#gradient)"
-                strokeWidth="2"
-                className="animate-pulse"
-                style={{ animationDelay: `${i * 0.2}s` }}
-              />
-            ))}
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.3" />
-              </linearGradient>
-            </defs>
-          </svg>
+        </div>
+      )}
+      
+      <div className="flex items-start justify-between mb-4">
+        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <div className="text-right">
+          <div className="text-3xl font-bold text-green-400">{apy}%</div>
+          <div className="text-sm text-gray-400">APY</div>
         </div>
       </div>
       
-      {/* Performance metrics overlay */}
-      <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg p-3">
-        <div className="text-accent text-sm font-semibold">Strategy Network</div>
-        <div className="text-white text-lg font-bold">5 Protocols</div>
-        <div className="text-muted-foreground text-xs">Multi-Chain</div>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${risk === 'Low' ? 'bg-green-400' : risk === 'Medium' ? 'bg-yellow-400' : 'bg-red-400'}`} />
+          <span className="text-gray-300 text-sm">{risk} Risk</span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Globe className="w-4 h-4 text-blue-400" />
+          <span className="text-gray-300 text-sm">{chains} Chains</span>
+        </div>
+        
+        <div className="flex flex-wrap gap-2">
+          {protocols.slice(0, 3).map((protocol, i) => (
+            <span key={i} className="px-2 py-1 bg-white/10 rounded-full text-xs text-gray-300">
+              {protocol}
+            </span>
+          ))}
+          {protocols.length > 3 && (
+            <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-gray-300">
+              +{protocols.length - 3}
+            </span>
+          )}
+        </div>
+      </div>
+      
+      <div className="mt-6 pt-4 border-t border-white/10">
+        <Button className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-semibold transition-all duration-300 group">
+          <span>View Strategy</span>
+          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+        </Button>
       </div>
     </div>
   );
 
-  const FeatureCard = ({ icon: Icon, title, description, gradient }) => (
-    <div className="group relative bg-gradient-to-br from-card/50 to-muted/50 backdrop-blur-sm rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:transform hover:scale-105">
-      <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-        <Icon className="w-6 h-6 text-white" />
+  const FeatureCard = ({ icon: Icon, title, description, gradient, delay = 0 }) => (
+    <FloatingCard delay={delay}>
+      <div className="group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20 hover:border-orange-500/50 transition-all duration-500 hover:transform hover:scale-105">
+        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
+        <p className="text-gray-300 leading-relaxed">{description}</p>
       </div>
-      <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{description}</p>
-    </div>
+    </FloatingCard>
   );
 
-  const MetricCard = ({ value, label, trend }) => (
-    <div className="bg-gradient-to-br from-card/80 to-muted/80 backdrop-blur-sm rounded-xl p-4 border border-border">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-2xl font-bold text-foreground">{value}</span>
-        <TrendingUp className="w-5 h-5 text-green-400" />
+  const MetricCard = ({ value, label, trend, icon: Icon, delay = 0 }) => (
+    <FloatingCard delay={delay}>
+      <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 text-center">
+        <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center">
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+        <div className="text-3xl font-bold text-white mb-2">{value}</div>
+        <div className="text-gray-300 text-sm mb-1">{label}</div>
+        <div className="text-green-400 text-xs">{trend}</div>
       </div>
-      <div className="text-muted-foreground text-sm">{label}</div>
-      <div className="text-green-400 text-xs mt-1">{trend}</div>
-    </div>
+    </FloatingCard>
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen bg-slate-900 text-white overflow-hidden">
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 py-20 pt-32">
         <AnimatedBackground />
         
         <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             {/* Logo/Brand */}
-            <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-card/50 backdrop-blur-sm rounded-full border border-border">
-              <Sparkles className="w-5 h-5 text-accent" />
-              <span className="text-accent font-semibold">Forge</span>
-            </div>
+            <FloatingCard delay={0.2}>
+              <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/10 backdrop-blur-xl rounded-full border border-white/20">
+                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-white font-bold text-lg">Forge</span>
+              </div>
+            </FloatingCard>
             
             {/* Main headline */}
-            <h1 className="text-6xl md:text-8xl font-black mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-foreground via-muted-foreground to-foreground bg-clip-text text-transparent">
-                DeFi Strategies
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Decoded
-              </span>
-            </h1>
+            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <h1 className="text-7xl md:text-9xl font-black mb-8 leading-tight">
+                <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+                  The Future of
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 bg-clip-text text-transparent">
+                  DeFi Strategies
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+                  Automated
+                </span>
+              </h1>
+            </div>
             
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-              Explore and understand proven multi-chain yield strategies with detailed breakdowns. 
-              <br />
-              <span className="text-foreground font-semibold">Research-backed. Risk-analyzed. Step-by-step explained.</span>
-            </p>
+            <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <p className="text-2xl md:text-3xl text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+                Stop chasing APYs across Telegram threads. Forge builds, vets, and automates optimized multi-chain strategies so your capital compounds—without the chaos.
+              </p>
+            </div>
             
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <Link to="/strategies">
-                <Button className="group relative px-8 py-4 bg-gradient-to-r from-primary to-accent rounded-xl font-semibold text-white text-lg hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 hover:scale-105">
-                  <span className="relative z-10 flex items-center gap-2">
+                <Button className="group relative px-10 py-5 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl font-bold text-white text-xl hover:shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105">
+                  <span className="relative z-10 flex items-center gap-3">
+                    <Zap className="w-6 h-6" />
                     Explore Strategies
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </Button>
               </Link>
               
-              <Button variant="outline" className="group px-8 py-4 border-2 border-border rounded-xl font-semibold text-foreground text-lg hover:border-accent hover:bg-accent/10 transition-all duration-300 flex items-center gap-2">
-                <Play className="w-5 h-5" />
-                Watch Demo
+              <Button variant="outline" className="group px-10 py-5 border-2 border-white/30 rounded-2xl font-bold text-white text-xl hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 flex items-center gap-3 backdrop-blur-xl">
+                <Play className="w-6 h-6" />
+                Learn How It Works
               </Button>
             </div>
             
-
-            
             {/* Trust indicators */}
-            <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-sm">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
+            <div className={`flex flex-wrap justify-center items-center gap-8 text-gray-400 text-lg transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-green-400" />
                 <span>Audited Smart Contracts</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <Lock className="w-5 h-5 text-blue-400" />
                 <span>Non-Custodial</span>
               </div>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <BarChart3 className="w-5 h-5 text-orange-400" />
                 <span>$50M+ Optimized</span>
               </div>
             </div>
           </div>
           
-          {/* Modern Strategy Visualization */}
-          <div className="max-w-4xl mx-auto">
-            <ModernStrategyVisualization />
+          {/* Strategy Cards Grid */}
+          <div className={`grid md:grid-cols-3 gap-8 max-w-6xl mx-auto transition-all duration-1000 delay-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <StrategyCard
+              title="Lido + Arbitrum Maximizer"
+              apy="31.2"
+              risk="Low"
+              chains="3"
+              protocols={["Lido", "Arbitrum", "Curve", "Convex"]}
+              featured={true}
+            />
+            <StrategyCard
+              title="Curve 3Pool Optimizer"
+              apy="8.5"
+              risk="Low"
+              chains="1"
+              protocols={["Curve", "Convex", "USDC", "USDT"]}
+            />
+            <StrategyCard
+              title="Cross-Chain Yield Hunter"
+              apy="24.7"
+              risk="Medium"
+              chains="5"
+              protocols={["Aave", "Uniswap", "Compound", "Sushi"]}
+            />
           </div>
         </div>
         
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-muted-foreground" />
+          <ChevronDown className="w-8 h-8 text-gray-400" />
         </div>
       </section>
 
-      {/* Performance Metrics */}
-      <section className="py-20 px-4 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="text-foreground">Proven </span>
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Results</span>
-            </h2>
-            <p className="text-xl text-muted-foreground">Real performance from our optimized strategies</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-            <MetricCard value="28.4%" label="Average APY" trend="+12% vs market" />
-            <MetricCard value="94%" label="Success Rate" trend="Last 30 days" />
-            <MetricCard value="$50M+" label="Total Analyzed" trend="+200% growth" />
-            <MetricCard value="1000+" label="Protocols Tracked" trend="Multi-chain" />
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="text-foreground">How </span>
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Forge</span>
-              <span className="text-foreground"> Works</span>
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={Target}
-              title="Strategy Research"
-              description="Deep analysis of investment goals, risk tolerance, and market conditions to identify optimal DeFi opportunities across chains."
-              gradient="from-blue-500 to-purple-600"
-            />
-            <FeatureCard
-              icon={BarChart3}
-              title="Protocol Analysis"
-              description="Comprehensive evaluation of 1000+ protocols across multiple chains to find the best yield opportunities and risk profiles."
-              gradient="from-primary to-accent"
-            />
-            <FeatureCard
-              icon={Zap}
-              title="Strategy Breakdown"
-              description="Detailed step-by-step explanations of how each strategy works, including risks, requirements, and expected returns."
-              gradient="from-green-500 to-teal-600"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Strategy Example */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-card/50 to-muted/50 backdrop-blur-sm rounded-3xl p-8 border border-border">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-muted-foreground">Live Strategy Example</span>
-            </div>
-            
-            <h3 className="text-3xl font-bold text-foreground mb-6">Multi-Chain ETH Maximizer</h3>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
-                  <span className="text-foreground">Stake ETH on Lido → Liquid staking rewards</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
-                  <span className="text-foreground">Bridge stETH to Arbitrum → Lower fees</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-                  <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
-                  <span className="text-foreground">Provide liquidity on Curve → Trading fees</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
-                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
-                  <span className="text-foreground">Stake LP tokens → Additional rewards</span>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="text-center p-6 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl border border-accent/30">
-                  <div className="text-4xl font-bold text-foreground mb-2">31.2%</div>
-                  <div className="text-accent font-semibold">Projected APY</div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-background/50 rounded-lg">
-                    <div className="text-xl font-bold text-green-400">Low</div>
-                    <div className="text-muted-foreground text-sm">Risk Level</div>
-                  </div>
-                  <div className="text-center p-4 bg-background/50 rounded-lg">
-                    <div className="text-xl font-bold text-blue-400">3</div>
-                    <div className="text-muted-foreground text-sm">Chains</div>
-                  </div>
-                </div>
-                
-                <Link to="/strategies">
-                  <Button className="w-full py-3 bg-gradient-to-r from-primary to-accent rounded-lg font-semibold text-white hover:shadow-lg transition-all duration-300">
-                    Learn This Strategy
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Email Capture */}
-      <section className="py-20 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-card/80 to-muted/80 backdrop-blur-sm rounded-3xl p-8 border border-border">
+      {/* Sign Up for Updates Section */}
+      <section className="py-32 px-4 relative">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-12 border border-white/20">
             {!isSubmitted ? (
               <>
-                <h2 className="text-4xl font-bold mb-4">
-                  <span className="text-foreground">Ready to </span>
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Forge</span>
-                  <span className="text-foreground">?</span>
+                <h2 className="text-5xl font-bold mb-6">
+                  <span className="text-white">Be the </span>
+                  <span className="bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">First</span>
+                  <span className="text-white"> to Know</span>
                 </h2>
-                <p className="text-xl text-muted-foreground mb-8">
-                  Join the waitlist for early access to advanced DeFi strategies
+                <p className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
+                  We're rolling out new strategies, product updates, and automation features every month. Join the Forge waitlist and get updates straight to your inbox.
                 </p>
                 
-                <form onSubmit={handleEmailSubmit} className="space-y-4">
+                <form onSubmit={handleEmailSubmit} className="space-y-6 max-w-md mx-auto">
                   <div className="relative">
                     <input
                       type="email"
                       placeholder="Enter your email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-6 py-4 bg-background/50 border border-border rounded-xl text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+                      className="w-full px-8 py-6 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 text-lg backdrop-blur-xl"
                       required
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full py-4 bg-gradient-to-r from-primary to-accent rounded-xl font-semibold text-white text-lg hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 hover:scale-105"
+                    className="w-full py-6 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl font-bold text-white text-xl hover:shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105"
                   >
-                    Get Early Access
+                    Sign Up
                   </Button>
                 </form>
                 
-                <p className="text-muted-foreground text-sm mt-4">
-                  🔥 2,847 builders already joined • No spam, ever
-                </p>
+                <div className="flex items-center justify-center gap-8 mt-8 text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    <span>No spam. Just DeFi insights, new strategies, and early access.</span>
+                  </div>
+                </div>
               </>
             ) : (
-              <div className="space-y-6">
-                <div className="w-20 h-20 mx-auto bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center">
-                  <Shield className="w-10 h-10 text-white" />
+              <div className="space-y-8">
+                <div className="w-24 h-24 mx-auto bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                  <Shield className="w-12 h-12 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-foreground">You're In!</h3>
-                <p className="text-xl text-muted-foreground">
-                  We'll notify you when Forge is ready to optimize your DeFi strategies.
+                <h3 className="text-4xl font-bold text-white">You're In!</h3>
+                <p className="text-2xl text-gray-300">
+                  Welcome to the Forge community. We'll keep you updated on new strategies, automation features, and exclusive insights.
                 </p>
-                <div className="text-accent font-semibold">
-                  Expected launch: Q2 2024
+                <div className="text-orange-400 font-bold text-xl">
+                  Next update: Coming soon
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Performance Metrics */}
+      <section className="py-32 px-4 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-white">Proven </span>
+              <span className="bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">Results</span>
+            </h2>
+            <p className="text-2xl text-gray-300">Real performance from our AI-optimized strategies</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <MetricCard value="28.4%" label="Average APY" trend="+12% vs market" icon={TrendingUp} delay={0.1} />
+            <MetricCard value="94%" label="Success Rate" trend="Last 30 days" icon={Award} delay={0.2} />
+            <MetricCard value="$50M+" label="Total Analyzed" trend="+200% growth" icon={BarChart3} delay={0.3} />
+            <MetricCard value="1000+" label="Protocols Tracked" trend="Multi-chain" icon={Globe} delay={0.4} />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-32 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="text-white">Why </span>
+              <span className="bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">Forge</span>
+              <span className="text-white"> Exists</span>
+            </h2>
+            <p className="text-2xl text-gray-300">AI-powered strategy analysis and execution</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-12">
+            <FeatureCard
+              icon={Brain}
+              title="AI Strategy Analysis"
+              description="Our advanced AI analyzes thousands of DeFi protocols across multiple chains to identify the most profitable and secure yield opportunities."
+              gradient="from-blue-500 to-purple-600"
+              delay={0.1}
+            />
+            <FeatureCard
+              icon={Target}
+              title="Risk Assessment"
+              description="Comprehensive risk analysis including smart contract audits, impermanent loss calculations, and market volatility assessment."
+              gradient="from-orange-500 to-yellow-500"
+              delay={0.2}
+            />
+            <FeatureCard
+              icon={Zap}
+              title="Step-by-Step Execution"
+              description="Detailed walkthroughs with exact amounts, gas optimization, and real-time monitoring to ensure successful strategy execution."
+              gradient="from-green-500 to-teal-600"
+              delay={0.3}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Strategy Example */}
+      <section className="py-32 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-12 border border-white/20">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-orange-400 font-semibold text-lg">Live Strategy Example</span>
+            </div>
+            
+            <h3 className="text-4xl font-bold text-white mb-8">Multi-Chain ETH Maximizer</h3>
+            
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                  <span className="text-white text-lg">Stake ETH on Lido → Liquid staking rewards</span>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                  <span className="text-white text-lg">Bridge stETH to Arbitrum → Lower fees</span>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20">
+                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                  <span className="text-white text-lg">Provide liquidity on Curve → Trading fees</span>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20">
+                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                  <span className="text-white text-lg">Stake LP tokens → Additional rewards</span>
+                </div>
+              </div>
+              
+              <div className="space-y-8">
+                <div className="text-center p-8 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-2xl border border-orange-500/30">
+                  <div className="text-6xl font-bold text-white mb-4">31.2%</div>
+                  <div className="text-orange-400 font-semibold text-xl">Projected APY</div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="text-center p-6 bg-white/10 rounded-xl border border-white/20">
+                    <div className="text-2xl font-bold text-green-400 mb-2">Low</div>
+                    <div className="text-gray-300">Risk Level</div>
+                  </div>
+                  <div className="text-center p-6 bg-white/10 rounded-xl border border-white/20">
+                    <div className="text-2xl font-bold text-blue-400 mb-2">3</div>
+                    <div className="text-gray-300">Chains</div>
+                  </div>
+                </div>
+                
+                <Link to="/strategies">
+                  <Button className="w-full py-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl font-bold text-white text-lg hover:shadow-2xl hover:shadow-orange-500/25 transition-all duration-300">
+                    Learn This Strategy
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
