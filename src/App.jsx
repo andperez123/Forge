@@ -7,6 +7,7 @@ import { StrategiesPage } from './pages/StrategiesPage';
 import { StrategyBuilderPage } from './pages/StrategyBuilderPage';
 import { StrategyDetailPage } from './pages/StrategyDetailPage';
 import { BlogPage } from './pages/BlogPage';
+import { BlogDetailPage } from './pages/BlogDetailPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
@@ -26,6 +27,7 @@ function App() {
             <Route path="/strategies/:id" element={<StrategyDetailPage />} />
             <Route path="/strategy-builder" element={<StrategyBuilderPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/admin" element={<AdminPage />} />

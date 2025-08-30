@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
@@ -15,6 +15,7 @@ export function BlogPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
+  const navigate = useNavigate();
 
   // Get unique categories and tags from Firebase data
   const categories = ['all', ...new Set(posts?.map(post => post.category) || [])];
@@ -79,8 +80,15 @@ export function BlogPage() {
     });
   };
 
+  const handleBlogClick = (slug) => {
+    navigate(`/blog/${slug}`);
+  };
+
   const BlogPostCard = ({ post, featured = false }) => (
-    <Card className={`group hover:shadow-lg transition-all duration-300 ${featured ? 'md:col-span-2 lg:col-span-3' : ''}`}>
+    <Card 
+      className={`group cursor-pointer hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105 ${featured ? 'md:col-span-2 lg:col-span-3' : ''}`}
+      onClick={() => handleBlogClick(post.slug)}
+    >
       <div className={`${featured ? 'md:flex' : ''}`}>
         {/* Image placeholder */}
         <div className={`bg-gradient-to-br from-primary/20 to-accent/20 ${featured ? 'md:w-1/2' : 'h-48'} flex items-center justify-center`}>
@@ -94,9 +102,7 @@ export function BlogPage() {
               {post.featured && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Featured</Badge>}
             </div>
             <CardTitle className={`group-hover:text-primary transition-colors ${featured ? 'text-2xl' : 'text-xl'}`}>
-              <Link to={`/blog/${post.slug}`}>
-                {post.title}
-              </Link>
+              {post.title}
             </CardTitle>
             <CardDescription className={`${featured ? 'text-base' : 'text-sm'}`}>
               {post.excerpt}
@@ -137,13 +143,16 @@ export function BlogPage() {
             </div>
 
             {/* Read more link */}
-            <Link 
-              to={`/blog/${post.slug}`}
+            <div 
               className="inline-flex items-center gap-2 text-primary hover:text-accent transition-colors font-medium"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBlogClick(post.slug);
+              }}
             >
               Read More
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </div>
           </CardContent>
         </div>
       </div>
