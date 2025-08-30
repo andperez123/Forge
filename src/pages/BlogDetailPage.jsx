@@ -16,6 +16,9 @@ export function BlogDetailPage() {
   useEffect(() => {
     if (posts && posts.length > 0) {
       const foundPost = posts.find(p => p.slug === slug);
+      console.log('Found post:', foundPost);
+      console.log('Post content:', foundPost?.content);
+      console.log('Post excerpt:', foundPost?.excerpt);
       setPost(foundPost);
     }
   }, [posts, slug]);
@@ -96,88 +99,23 @@ export function BlogDetailPage() {
   // Sample markdown content for demonstration
   const sampleMarkdown = post.content || `# ${post.title}
 
-${post.excerpt}
+${post.excerpt || 'No excerpt available.'}
 
-## Introduction
+## Article Content
 
-This is a comprehensive guide to DeFi strategies and yield optimization. In this article, we'll explore various approaches to maximizing returns while managing risk in the decentralized finance ecosystem.
+This article is currently being prepared. Please check back soon for the full content.
 
-## Key Concepts
+### What to Expect
 
-### 1. **Liquidity Provision**
-Liquidity provision is one of the most popular DeFi strategies. By providing liquidity to automated market makers (AMMs), you can earn trading fees and additional rewards.
-
-**Benefits:**
-- Earn trading fees from every swap
-- Receive additional token rewards
-- Participate in protocol governance
-
-**Risks:**
-- Impermanent loss
-- Smart contract risk
-- Market volatility
-
-### 2. **Yield Farming**
-Yield farming involves staking tokens to earn additional rewards, often in the form of governance tokens.
-
-\`\`\`javascript
-// Example yield farming strategy
-const strategy = {
-  deposit: "USDC",
-  protocol: "Compound",
-  rewards: ["COMP", "USDC"],
-  apy: 8.5
-};
-\`\`\`
-
-## Step-by-Step Implementation
-
-### Step 1: Choose Your Strategy
-1. Assess your risk tolerance
-2. Determine your investment timeline
-3. Research available protocols
-4. Calculate expected returns
-
-### Step 2: Set Up Your Wallet
-- Install MetaMask or another Web3 wallet
-- Ensure you have sufficient ETH for gas fees
-- Connect to the appropriate network
-
-### Step 3: Execute Your Strategy
-1. **Deposit funds** into your chosen protocol
-2. **Stake tokens** to earn rewards
-3. **Monitor performance** regularly
-4. **Reinvest rewards** for compound growth
-
-## Risk Management
-
-| Risk Type | Mitigation Strategy |
-|-----------|-------------------|
-| Smart Contract | Use audited protocols |
-| Market | Diversify across assets |
-| Liquidity | Maintain emergency funds |
-
-## Performance Tracking
-
-Track your strategy performance using these metrics:
-
-- **APY (Annual Percentage Yield)**
-- **TVL (Total Value Locked)**
-- **Impermanent Loss**
-- **Gas Costs**
-
-## Conclusion
-
-DeFi strategies offer significant opportunities for yield generation, but they come with inherent risks. Always:
-
-- Do your own research
-- Start with small amounts
-- Diversify your strategies
-- Monitor your positions regularly
+- Detailed analysis and insights
+- Step-by-step guides
+- Code examples and strategies
+- Risk management tips
+- Best practices for DeFi
 
 ---
 
-*This article is for educational purposes only. Always consult with a financial advisor before making investment decisions.*`;
+*This article is under development. The full content will be available soon.*`;
 
   return (
     <div className="min-h-screen bg-background pt-20">
