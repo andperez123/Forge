@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { ArrowRight, Zap, Shield, TrendingUp, Users, Clock, CheckCircle, Rocket, Sparkles, Star, Target, BarChart3, Brain, ArrowUpRight, BookOpen, Globe, Play, Lock, ChevronDown, Award } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { populateSampleData } from '../lib/sampleData';
+import { useStrategies } from '../lib/hooks/useFirebase';
 
 export function LandingPage() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef(null);
+  const navigate = useNavigate();
+  const { strategies, loading: strategiesLoading } = useStrategies();
 
   // Animation on scroll
   useEffect(() => {
@@ -43,6 +46,10 @@ export function LandingPage() {
     }
   };
 
+  const handleStrategyClick = (strategyId) => {
+    navigate(`/strategies/${strategyId}`);
+  };
+
   const StepCard = ({ number, title, description, icon: Icon, delay = 0 }) => (
     <div 
       className="group relative bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105"
@@ -72,8 +79,11 @@ export function LandingPage() {
     </div>
   );
 
-  const StrategyCard = ({ title, apy, risk, chains, protocols, featured = false, learningMode = false }) => (
-    <div className={`group relative bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105 ${featured ? 'ring-2 ring-orange-500/30' : ''}`}>
+  const StrategyCard = ({ title, apy, risk, chains, protocols, featured = false, learningMode = false, onClick }) => (
+    <div 
+      className={`group relative bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105 cursor-pointer ${featured ? 'ring-2 ring-orange-500/30' : ''}`}
+      onClick={onClick}
+    >
       {featured && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <div className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
@@ -377,29 +387,74 @@ export function LandingPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <StrategyCard
-              title="Stablecoin Lending"
-              apy="8.5"
-              risk="Low"
-              chains="1"
-              protocols={["Aave", "Compound", "USDC", "USDT"]}
-              featured={true}
-            />
-            <StrategyCard
-              title="Liquid Staking ETH"
-              apy="31.2"
-              risk="Low"
-              chains="3"
-              protocols={["Lido", "Arbitrum", "Curve", "Convex"]}
-              learningMode={true}
-            />
-            <StrategyCard
-              title="Cross-Chain Yield"
-              apy="24.7"
-              risk="Medium"
-              chains="5"
-              protocols={["Uniswap", "Sushi", "PancakeSwap", "TraderJoe"]}
-            />
+            {strategiesLoading ? (
+              // Loading state
+              <>
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                </div>
+              </>
+            ) : strategies && strategies.length > 0 ? (
+              // Show first 3 strategies from Firebase
+              strategies.slice(0, 3).map((strategy, index) => (
+                <StrategyCard
+                  key={strategy.id}
+                  title={strategy.name}
+                  apy={strategy.apy?.toString() || "0"}
+                  risk={strategy.risk || "Medium"}
+                  chains={strategy.chains?.length?.toString() || "1"}
+                  protocols={strategy.protocols || []}
+                  featured={index === 0} // First strategy is featured
+                  learningMode={index === 1} // Second strategy has learning mode
+                  onClick={() => handleStrategyClick(strategy.id)}
+                />
+              ))
+            ) : (
+              // Fallback if no strategies found
+              <>
+                <StrategyCard
+                  title="Stablecoin Lending"
+                  apy="8.5"
+                  risk="Low"
+                  chains="1"
+                  protocols={["Aave", "Compound", "USDC", "USDT"]}
+                  featured={true}
+                  onClick={() => handleStrategyClick('stablecoin-lending')}
+                />
+                <StrategyCard
+                  title="Liquid Staking ETH"
+                  apy="31.2"
+                  risk="Low"
+                  chains="3"
+                  protocols={["Lido", "Arbitrum", "Curve", "Convex"]}
+                  learningMode={true}
+                  onClick={() => handleStrategyClick('liquid-staking-eth')}
+                />
+                <StrategyCard
+                  title="Cross-Chain Yield"
+                  apy="24.7"
+                  risk="Medium"
+                  chains="5"
+                  protocols={["Uniswap", "Sushi", "PancakeSwap", "TraderJoe"]}
+                  onClick={() => handleStrategyClick('cross-chain-yield')}
+                />
+              </>
+            )}
           </div>
           
           <div className="text-center mt-12">
