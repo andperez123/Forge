@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -8,177 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Search, Zap, ExternalLink, Star, Clock, DollarSign } from 'lucide-react';
 import { useStrategies } from '../lib/hooks/useFirebase';
 
-// Hardcoded strategies data - ready for Firebase integration
-const STRATEGIES_DATA = [
-  {
-    id: 'lido-arbitrum',
-    name: 'Lido + Arbitrum Yield Strategy',
-    description: 'Maximize yield by staking ETH with Lido and bridging to Arbitrum for additional DeFi opportunities.',
-    apy: 31.2,
-    risk: 'Low',
-    tvl: 25000000,
-    chains: ['Ethereum', 'Arbitrum'],
-    protocols: ['Lido', 'Arbitrum Bridge', 'Curve', 'Convex'],
-    category: 'Liquid Staking',
-    tags: ['Liquid Staking', 'Cross-chain', 'Low Risk', 'High Yield'],
-    steps: [
-      'Stake ETH on Lido for stETH',
-      'Bridge stETH to Arbitrum',
-      'Provide liquidity on Curve stETH/ETH pool',
-      'Stake LP tokens on Convex for additional rewards'
-    ],
-    featured: true,
-    timeToSetup: '15 min',
-    minInvestment: 100,
-    maxInvestment: 1000,
-    lastUpdated: '2024-01-15',
-    performance: {
-      '7d': 2.1,
-      '30d': 8.7,
-      '90d': 24.3
-    }
-  },
-  {
-    id: 'curve-3pool',
-    name: 'Curve 3Pool + Convex Strategy',
-    description: 'Earn stable yields by providing liquidity to Curve\'s 3Pool and maximizing rewards through Convex.',
-    apy: 8.5,
-    risk: 'Low',
-    tvl: 15000000,
-    chains: ['Ethereum'],
-    protocols: ['Curve', 'Convex'],
-    category: 'Stablecoin',
-    tags: ['Stablecoin', 'Low Risk', 'Stable Yield'],
-    steps: [
-      'Acquire USDC, USDT, and DAI in equal amounts',
-      'Provide liquidity to Curve\'s 3Pool',
-      'Stake LP tokens on Convex for additional rewards'
-    ],
-    featured: false,
-    timeToSetup: '10 min',
-    minInvestment: 500,
-    maxInvestment: 100000,
-    lastUpdated: '2024-01-10',
-    performance: {
-      '7d': 0.8,
-      '30d': 3.2,
-      '90d': 9.8
-    }
-  },
-  {
-    id: 'btc-wrapper-strategy',
-    name: 'Bitcoin Wrapper Yield',
-    description: 'Earn yield on Bitcoin through wrapped tokens and lending protocols',
-    apy: 18.5,
-    risk: 'Medium',
-    tvl: 67000000,
-    chains: ['Ethereum', 'Arbitrum'],
-    protocols: ['Compound', 'Aave', 'Curve'],
-    category: 'Bitcoin Yield',
-    tags: ['BTC', 'Wrapped', 'Conservative'],
-    steps: [
-      'Wrap BTC to WBTC',
-      'Deposit WBTC to Compound',
-      'Provide liquidity to WBTC/ETH pool',
-      'Stake LP tokens for additional rewards'
-    ],
-    featured: true,
-    timeToSetup: '7 minutes',
-    minInvestment: 0.01,
-    maxInvestment: 50,
-    lastUpdated: '2024-01-13',
-    performance: {
-      '7d': 1.2,
-      '30d': 4.8,
-      '90d': 16.2
-    }
-  },
-  {
-    id: 'arbitrage-bot',
-    name: 'Cross-Chain Arbitrage',
-    description: 'Automated arbitrage opportunities across different chains and DEXs',
-    apy: 52.3,
-    risk: 'High',
-    tvl: 34000000,
-    chains: ['Ethereum', 'BSC', 'Polygon', 'Arbitrum'],
-    protocols: ['1inch', 'Uniswap', 'PancakeSwap'],
-    category: 'Arbitrage',
-    tags: ['Arbitrage', 'Automated', 'Multi-DEX'],
-    steps: [
-      'Monitor price differences across DEXs',
-      'Execute trades when profitable spreads appear',
-      'Bridge assets between chains as needed',
-      'Compound profits automatically'
-    ],
-    featured: false,
-    timeToSetup: '15 minutes',
-    minInvestment: 5000,
-    maxInvestment: 500000,
-    lastUpdated: '2024-01-15',
-    performance: {
-      '7d': 4.1,
-      '30d': 15.8,
-      '90d': 47.2
-    }
-  },
-  {
-    id: 'stable-trinity',
-    name: 'Stablecoin Trinity',
-    description: 'Diversified stablecoin strategy across USDC, USDT, and DAI',
-    apy: 22.7,
-    risk: 'Low',
-    tvl: 156000000,
-    chains: ['Ethereum', 'Polygon'],
-    protocols: ['Curve', 'Yearn', 'Convex'],
-    category: 'Stablecoin',
-    tags: ['Stable', 'Diversified', 'Low-risk'],
-    steps: [
-      'Deposit equal amounts of USDC, USDT, DAI',
-      'Provide liquidity to Curve 3pool',
-      'Stake LP tokens on Convex',
-      'Auto-compound rewards'
-    ],
-    featured: true,
-    timeToSetup: '3 minutes',
-    minInvestment: 100,
-    maxInvestment: 1000000,
-    lastUpdated: '2024-01-14',
-    performance: {
-      '7d': 1.8,
-      '30d': 6.9,
-      '90d': 20.1
-    }
-  },
-  {
-    id: 'defi-index-fund',
-    name: 'DeFi Index Strategy',
-    description: 'Diversified exposure to top DeFi tokens with automated rebalancing',
-    apy: 28.9,
-    risk: 'Medium',
-    tvl: 78000000,
-    chains: ['Ethereum', 'Polygon'],
-    protocols: ['Balancer', 'Index Coop', 'Yearn'],
-    category: 'Index Fund',
-    tags: ['Diversified', 'DeFi', 'Rebalancing'],
-    steps: [
-      'Purchase DeFi index tokens (DPI, MVI)',
-      'Stake index tokens for additional yield',
-      'Participate in governance for extra rewards',
-      'Auto-rebalance based on market conditions'
-    ],
-    featured: false,
-    timeToSetup: '8 minutes',
-    minInvestment: 500,
-    maxInvestment: 250000,
-    lastUpdated: '2024-01-12',
-    performance: {
-      '7d': 2.8,
-      '30d': 9.4,
-      '90d': 26.7
-    }
-  }
-];
-
 export function StrategiesPage() {
   const { strategies, loading: isLoading, error } = useStrategies();
   const [filteredStrategies, setFilteredStrategies] = useState([]);
@@ -186,6 +15,7 @@ export function StrategiesPage() {
   const [selectedRisk, setSelectedRisk] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('apy');
+  const navigate = useNavigate();
 
   // Filter and search logic
   useEffect(() => {
@@ -236,7 +66,7 @@ export function StrategiesPage() {
   }, [strategies, searchTerm, selectedRisk, selectedCategory, sortBy]);
 
   const getRiskColor = (risk) => {
-    switch (risk.toLowerCase()) {
+    switch (risk?.toLowerCase()) {
       case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
       case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
@@ -245,14 +75,22 @@ export function StrategiesPage() {
   };
 
   const formatTVL = (tvl) => {
+    if (!tvl) return '$0';
     if (tvl >= 1000000) {
       return `$${(tvl / 1000000).toFixed(1)}M`;
     }
     return `$${(tvl / 1000).toFixed(0)}K`;
   };
 
+  const handleStrategyClick = (strategyId) => {
+    navigate(`/strategies/${strategyId}`);
+  };
+
   const StrategyCard = ({ strategy }) => (
-    <Card className="strategy-card group">
+    <Card 
+      className="strategy-card group cursor-pointer hover:shadow-lg transition-all duration-300 hover:transform hover:scale-105"
+      onClick={() => handleStrategyClick(strategy.id)}
+    >
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
@@ -264,7 +102,7 @@ export function StrategiesPage() {
             )}
           </div>
           <Badge className={getRiskColor(strategy.risk)}>
-            {strategy.risk} Risk
+            {strategy.risk || 'Unknown'} Risk
           </Badge>
         </div>
         <CardDescription className="text-muted-foreground">
@@ -276,7 +114,7 @@ export function StrategiesPage() {
         {/* Key Metrics */}
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 bg-muted/50 rounded-lg">
-            <div className="text-2xl font-bold text-primary">{strategy.apy}%</div>
+            <div className="text-2xl font-bold text-primary">{strategy.apy || 0}%</div>
             <div className="text-xs text-muted-foreground">APY</div>
           </div>
           <div className="text-center p-3 bg-muted/50 rounded-lg">
@@ -284,53 +122,68 @@ export function StrategiesPage() {
             <div className="text-xs text-muted-foreground">TVL</div>
           </div>
           <div className="text-center p-3 bg-muted/50 rounded-lg">
-            <div className="text-lg font-semibold text-foreground">{strategy.chains.length}</div>
+            <div className="text-lg font-semibold text-foreground">{strategy.chains?.length || 0}</div>
             <div className="text-xs text-muted-foreground">Chains</div>
           </div>
         </div>
 
         {/* Performance */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">7d Performance:</span>
-            <span className="text-green-400">+{strategy.performance['7d']}%</span>
+        {strategy.performance && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">7d Performance:</span>
+              <span className="text-green-400">+{strategy.performance['7d'] || 0}%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">30d Performance:</span>
+              <span className="text-green-400">+{strategy.performance['30d'] || 0}%</span>
+            </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">30d Performance:</span>
-            <span className="text-green-400">+{strategy.performance['30d']}%</span>
-          </div>
-        </div>
+        )}
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2">
-          {strategy.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-
-        {/* Protocols */}
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-foreground">Protocols:</div>
+        {strategy.tags && strategy.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {strategy.protocols.map((protocol) => (
-              <Badge key={protocol} variant="outline" className="text-xs">
-                {protocol}
+            {strategy.tags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-xs">
+                {tag}
               </Badge>
             ))}
           </div>
-        </div>
+        )}
+
+        {/* Protocols */}
+        {strategy.protocols && strategy.protocols.length > 0 && (
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-foreground">Protocols:</div>
+            <div className="flex flex-wrap gap-2">
+              {strategy.protocols.map((protocol) => (
+                <Badge key={protocol} variant="outline" className="text-xs">
+                  {protocol}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex gap-2 pt-4">
-          <Link to={`/strategies/${strategy.id}`} className="flex-1">
-            <Button className="w-full bg-gradient-to-r from-primary to-accent hover:shadow-lg transition-all duration-300">
-              <Zap className="w-4 h-4 mr-2" />
-              View Details
-            </Button>
-          </Link>
-          <Button variant="outline" size="sm" className="px-3">
+          <Button 
+            className="flex-1 bg-gradient-to-r from-primary to-accent hover:shadow-lg transition-all duration-300"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStrategyClick(strategy.id);
+            }}
+          >
+            <Zap className="w-4 h-4 mr-2" />
+            View Details
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="px-3"
+            onClick={(e) => e.stopPropagation()}
+          >
             <ExternalLink className="w-4 h-4" />
           </Button>
         </div>
@@ -339,11 +192,11 @@ export function StrategiesPage() {
         <div className="flex justify-between text-xs text-muted-foreground pt-2 border-t border-border">
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {strategy.timeToSetup}
+            {strategy.timeToSetup || 'N/A'}
           </span>
           <span className="flex items-center gap-1">
             <DollarSign className="w-3 h-3" />
-            Min: ${strategy.minInvestment}
+            Min: ${strategy.minInvestment || 0}
           </span>
         </div>
       </CardContent>
@@ -421,25 +274,25 @@ export function StrategiesPage() {
             </div>
           </div>
 
-                  {/* Error Display */}
-        {error && (
-          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
-            <p className="text-red-400">Error loading strategies: {error}</p>
-          </div>
-        )}
+          {/* Error Display */}
+          {error && (
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-red-400">Error loading strategies: {error}</p>
+            </div>
+          )}
 
-        {/* Results count */}
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">
-            Showing {filteredStrategies.length} of {strategies?.length || 0} strategies
-          </p>
-          <Link to="/strategy-builder">
-            <Button variant="outline" className="flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Build Strategy
-            </Button>
-          </Link>
-        </div>
+          {/* Results count */}
+          <div className="flex items-center justify-between">
+            <p className="text-muted-foreground">
+              Showing {filteredStrategies.length} of {strategies?.length || 0} strategies
+            </p>
+            <Link to="/strategy-builder">
+              <Button variant="outline" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Build Strategy
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Featured Strategies */}
