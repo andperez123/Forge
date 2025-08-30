@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { ArrowRight, Zap, Shield, TrendingUp, Users, Clock, CheckCircle, Rocket, Sparkles, Star, Target, BarChart3, Brain, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Zap, Shield, TrendingUp, Users, Clock, CheckCircle, Rocket, Sparkles, Star, Target, BarChart3, Brain, ArrowUpRight, BookOpen, Globe, Play, Lock, ChevronDown, Award } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { populateSampleData } from '../lib/sampleData';
 
