@@ -67,7 +67,8 @@ export const sampleBlogPosts = [
     readTime: 8,
     category: "Strategy",
     tags: ["DeFi", "Yield Farming", "Liquid Staking", "Risk Management"],
-    featured: true
+    featured: true,
+    status: "published"
   },
   {
     title: "Understanding Liquid Staking Protocols: A Deep Dive",
@@ -78,7 +79,8 @@ export const sampleBlogPosts = [
     readTime: 6,
     category: "Education",
     tags: ["Liquid Staking", "Ethereum", "DeFi", "Staking"],
-    featured: true
+    featured: true,
+    status: "published"
   }
 ];
 

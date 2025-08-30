@@ -171,6 +171,23 @@ export function FirebaseTest() {
               <p>Firebase Auth Domain: {process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ? '✅ Set' : '❌ Missing'}</p>
             </div>
           </div>
+
+          {/* Firebase Index Information */}
+          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <h3 className="font-semibold text-blue-400 mb-2">Firebase Index Setup:</h3>
+            <div className="text-sm text-blue-300 space-y-2">
+              <p>If you encounter index errors when loading blog posts, you may need to create a composite index in Firebase:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Go to your Firebase Console</li>
+                <li>Navigate to Firestore Database → Indexes</li>
+                <li>Click "Create Index"</li>
+                <li>Collection ID: <code className="bg-blue-600/30 px-1 rounded">blog_posts</code></li>
+                <li>Fields to index: <code className="bg-blue-600/30 px-1 rounded">status (Ascending)</code> and <code className="bg-blue-600/30 px-1 rounded">createdAt (Descending)</code></li>
+                <li>Click "Create"</li>
+              </ol>
+              <p className="mt-2 text-xs">Note: The app will work without this index using a fallback query, but creating the index will improve performance.</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

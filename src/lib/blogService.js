@@ -22,7 +22,7 @@ export const createBlogPost = async (blogData) => {
       ...blogData,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      status: 'published',
+      status: blogData.status || 'published', // Ensure status is set
       views: 0,
       likes: 0
     };
@@ -37,17 +37,39 @@ export const createBlogPost = async (blogData) => {
 
 export const getAllBlogPosts = async () => {
   try {
-    const q = query(
-      collection(db, BLOG_COLLECTION),
-      where('status', '==', 'published'),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    // First try with the status filter and ordering
+    try {
+      const q = query(
+        collection(db, BLOG_COLLECTION),
+        where('status', '==', 'published'),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (indexError) {
+      // If index doesn't exist, fall back to a simpler query
+      console.warn('Composite index not found, using fallback query:', indexError.message);
+      
+      const q = query(
+        collection(db, BLOG_COLLECTION),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      // Filter by status in memory instead
+      const filteredDocs = querySnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(post => post.status === 'published' || !post.status); // Include posts without status or with 'published' status
+      
+      return filteredDocs;
+    }
   } catch (error) {
     console.error('Error getting blog posts:', error);
     throw error;
@@ -99,18 +121,41 @@ export const deleteBlogPost = async (postId) => {
 
 export const getBlogPostsByCategory = async (category) => {
   try {
-    const q = query(
-      collection(db, BLOG_COLLECTION),
-      where('category', '==', category),
-      where('status', '==', 'published'),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    // First try with both filters and ordering
+    try {
+      const q = query(
+        collection(db, BLOG_COLLECTION),
+        where('category', '==', category),
+        where('status', '==', 'published'),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (indexError) {
+      // If index doesn't exist, fall back to a simpler query
+      console.warn('Composite index not found for category query, using fallback:', indexError.message);
+      
+      const q = query(
+        collection(db, BLOG_COLLECTION),
+        where('category', '==', category),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      // Filter by status in memory instead
+      const filteredDocs = querySnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(post => post.status === 'published' || !post.status);
+      
+      return filteredDocs;
+    }
   } catch (error) {
     console.error('Error getting blog posts by category:', error);
     throw error;
