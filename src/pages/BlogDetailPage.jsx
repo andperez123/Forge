@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge';
 import { ArrowLeft, Calendar, Clock, User, Tag, BookOpen, Share2, Twitter, Facebook, Linkedin } from 'lucide-react';
 import { useBlogPosts } from '../lib/hooks/useFirebase';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export function BlogDetailPage() {
   const { slug } = useParams();
@@ -91,6 +93,92 @@ export function BlogDetailPage() {
   const shareUrl = window.location.href;
   const shareText = `Check out this article: ${post.title}`;
 
+  // Sample markdown content for demonstration
+  const sampleMarkdown = post.content || `# ${post.title}
+
+${post.excerpt}
+
+## Introduction
+
+This is a comprehensive guide to DeFi strategies and yield optimization. In this article, we'll explore various approaches to maximizing returns while managing risk in the decentralized finance ecosystem.
+
+## Key Concepts
+
+### 1. **Liquidity Provision**
+Liquidity provision is one of the most popular DeFi strategies. By providing liquidity to automated market makers (AMMs), you can earn trading fees and additional rewards.
+
+**Benefits:**
+- Earn trading fees from every swap
+- Receive additional token rewards
+- Participate in protocol governance
+
+**Risks:**
+- Impermanent loss
+- Smart contract risk
+- Market volatility
+
+### 2. **Yield Farming**
+Yield farming involves staking tokens to earn additional rewards, often in the form of governance tokens.
+
+\`\`\`javascript
+// Example yield farming strategy
+const strategy = {
+  deposit: "USDC",
+  protocol: "Compound",
+  rewards: ["COMP", "USDC"],
+  apy: 8.5
+};
+\`\`\`
+
+## Step-by-Step Implementation
+
+### Step 1: Choose Your Strategy
+1. Assess your risk tolerance
+2. Determine your investment timeline
+3. Research available protocols
+4. Calculate expected returns
+
+### Step 2: Set Up Your Wallet
+- Install MetaMask or another Web3 wallet
+- Ensure you have sufficient ETH for gas fees
+- Connect to the appropriate network
+
+### Step 3: Execute Your Strategy
+1. **Deposit funds** into your chosen protocol
+2. **Stake tokens** to earn rewards
+3. **Monitor performance** regularly
+4. **Reinvest rewards** for compound growth
+
+## Risk Management
+
+| Risk Type | Mitigation Strategy |
+|-----------|-------------------|
+| Smart Contract | Use audited protocols |
+| Market | Diversify across assets |
+| Liquidity | Maintain emergency funds |
+
+## Performance Tracking
+
+Track your strategy performance using these metrics:
+
+- **APY (Annual Percentage Yield)**
+- **TVL (Total Value Locked)**
+- **Impermanent Loss**
+- **Gas Costs**
+
+## Conclusion
+
+DeFi strategies offer significant opportunities for yield generation, but they come with inherent risks. Always:
+
+- Do your own research
+- Start with small amounts
+- Diversify your strategies
+- Monitor your positions regularly
+
+---
+
+*This article is for educational purposes only. Always consult with a financial advisor before making investment decisions.*`;
+
   return (
     <div className="min-h-screen bg-background pt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -152,33 +240,43 @@ export function BlogDetailPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="prose prose-lg max-w-none">
-              {post.content ? (
-                <div dangerouslySetInnerHTML={{ __html: post.content }} />
-              ) : (
-                <div className="space-y-6">
-                  <p className="text-lg leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  <p className="text-lg leading-relaxed">
-                    This is a placeholder for the full article content. In a real application, 
-                    this would contain the complete article text with proper formatting, 
-                    images, and interactive elements.
-                  </p>
-                  <p className="text-lg leading-relaxed">
-                    The article would include detailed explanations, code examples, 
-                    step-by-step guides, and practical insights related to DeFi strategies 
-                    and blockchain technology.
-                  </p>
-                  <h2 className="text-2xl font-bold mt-8 mb-4">Key Takeaways</h2>
-                  <ul className="list-disc list-inside space-y-2">
-                    <li>Understanding DeFi fundamentals</li>
-                    <li>Risk management strategies</li>
-                    <li>Yield optimization techniques</li>
-                    <li>Market analysis and trends</li>
-                  </ul>
-                </div>
-              )}
+            <div className="markdown-content">
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h1: ({node, ...props}) => <h1 className="text-3xl font-bold text-foreground mb-6 mt-8" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-foreground mb-4 mt-8" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="text-xl font-bold text-foreground mb-3 mt-6" {...props} />,
+                  h4: ({node, ...props}) => <h4 className="text-lg font-bold text-foreground mb-2 mt-4" {...props} />,
+                  p: ({node, ...props}) => <p className="text-muted-foreground leading-relaxed mb-4" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-1" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal list-inside text-muted-foreground mb-4 space-y-1" {...props} />,
+                  li: ({node, ...props}) => <li className="text-muted-foreground" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-bold text-foreground" {...props} />,
+                  em: ({node, ...props}) => <em className="italic text-muted-foreground" {...props} />,
+                  code: ({node, inline, ...props}) => 
+                    inline ? (
+                      <code className="bg-muted px-2 py-1 rounded text-primary font-mono text-sm" {...props} />
+                    ) : (
+                      <code className="block bg-muted p-4 rounded text-foreground font-mono text-sm overflow-x-auto" {...props} />
+                    ),
+                  pre: ({node, ...props}) => <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4" {...props} />,
+                  blockquote: ({node, ...props}) => (
+                    <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground mb-4" {...props} />
+                  ),
+                  table: ({node, ...props}) => (
+                    <div className="overflow-x-auto mb-4">
+                      <table className="min-w-full border border-border rounded-lg" {...props} />
+                    </div>
+                  ),
+                  th: ({node, ...props}) => <th className="border border-border px-4 py-2 text-left font-bold text-foreground" {...props} />,
+                  td: ({node, ...props}) => <td className="border border-border px-4 py-2 text-muted-foreground" {...props} />,
+                  a: ({node, ...props}) => <a className="text-primary hover:text-accent underline" {...props} />,
+                  hr: ({node, ...props}) => <hr className="border-border my-8" {...props} />
+                }}
+              >
+                {sampleMarkdown}
+              </ReactMarkdown>
             </div>
 
             {/* Tags */}
