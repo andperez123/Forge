@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar, Clock, User, Tag, BookOpen, Share2, Twitter, Faceb
 import { useBlogPosts } from '../lib/hooks/useFirebase';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { BlogPostSEO } from '../components/SEOHead';
 
 export function BlogDetailPage() {
   const { slug } = useParams();
@@ -119,6 +120,7 @@ This article is currently being prepared. Please check back soon for the full co
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      {post && <BlogPostSEO post={post} />}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
         <Link to="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">

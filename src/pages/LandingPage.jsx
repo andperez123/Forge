@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { ArrowRight, Zap, Target, TrendingUp, Shield, Play, ChevronDown, Sparkles, Brain, BarChart3, Lock, Star, Users, Globe, Award, CheckCircle, BookOpen, Rocket } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { ArrowRight, Zap, Shield, TrendingUp, Users, Clock, CheckCircle, Rocket, Sparkles, Star, Target, BarChart3, Brain, ArrowUpRight } from 'lucide-react';
+import { SEOHead } from '../components/SEOHead';
 import { populateSampleData } from '../lib/sampleData';
 
 export function LandingPage() {
@@ -148,6 +150,11 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <SEOHead 
+        title="Forge - DeFi Strategies Simplified" 
+        description="One platform to learn, launch, and automate yield across chains. No jargon. No 12-step guides. Just strategies that work." 
+        keywords="DeFi, yield farming, staking, automation, strategies, crypto, blockchain" 
+      />
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 py-20 pt-32">
         <div className="max-w-7xl mx-auto">

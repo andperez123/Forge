@@ -5,7 +5,9 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Mail, MessageSquare, Phone, MapPin, Clock, Send, CheckCircle, Twitter, Github, Linkedin } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Mail, MessageSquare, Phone, MapPin, Clock, Send, CheckCircle, AlertCircle, Twitter, Github, Linkedin, Globe } from 'lucide-react';
+import { SEOHead } from '../components/SEOHead';
 
 export function ContactPage() {
   const [formData, setFormData] = useState({
@@ -101,6 +103,11 @@ export function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      <SEOHead
+        title="Contact Us - Forge AI"
+        description="Get in touch with Forge AI for any questions, partnerships, or support. We're here to help you succeed in DeFi."
+        keywords="contact, support, forge ai, defi, blockchain, crypto"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-16">

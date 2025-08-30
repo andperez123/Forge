@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Search, Zap, ExternalLink, Star, Clock, DollarSign } from 'lucide-react';
 import { useStrategies } from '../lib/hooks/useFirebase';
+import { SEOHead } from '../components/SEOHead';
 
 export function StrategiesPage() {
   const { strategies, loading: isLoading, error } = useStrategies();
@@ -205,6 +206,11 @@ export function StrategiesPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      <SEOHead 
+        title="DeFi Strategies - Discover Proven DeFi Strategies" 
+        description="Explore a wide range of DeFi strategies, from stablecoin yields to arbitrage opportunities. Find the perfect strategy for your needs." 
+        keywords="DeFi strategies, yield farming, stablecoin yields, arbitrage, index funds, Bitcoin yield" 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">

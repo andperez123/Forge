@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Sparkles, Target, Users, Zap, Shield, Globe, Award, Heart, Brain } from 'lucide-react';
+import { ArrowRight, Users, Target, Shield, TrendingUp, Zap, Star, Award, Globe, CheckCircle } from 'lucide-react';
+import { SEOHead } from '../components/SEOHead';
 
 export function AboutPage() {
   const teamMembers = [
@@ -39,7 +40,7 @@ export function AboutPage() {
       description: 'We prioritize the security of user funds above all else, implementing multiple layers of protection and rigorous testing.'
     },
     {
-      icon: Brain,
+      icon: TrendingUp,
       title: 'AI-Powered Innovation',
       description: 'We leverage cutting-edge AI and machine learning to create strategies that adapt and optimize in real-time.'
     },
@@ -80,11 +81,16 @@ export function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      <SEOHead
+        title="About Forge - Building the Future of DeFi"
+        description="Learn about Forge, the platform that democratizes access to sophisticated DeFi strategies through AI-powered automation."
+        keywords="DeFi, AI, automation, strategies, investment, security"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-card/50 backdrop-blur-sm rounded-full border border-border">
-            <Sparkles className="w-5 h-5 text-accent" />
+            <Star className="w-5 h-5 text-accent" />
             <span className="text-accent font-semibold">About Forge</span>
           </div>
           
@@ -282,7 +288,7 @@ export function AboutPage() {
           <Card className="max-w-2xl mx-auto bg-gradient-to-br from-card/80 to-muted/80 backdrop-blur-sm border-border">
             <CardContent className="p-8">
               <div className="w-16 h-16 mx-auto bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mb-6">
-                <Heart className="w-8 h-8 text-white" />
+                <CheckCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Join Our Mission</h3>
               <p className="text-muted-foreground mb-6 leading-relaxed">

@@ -11,6 +11,7 @@ import { BlogDetailPage } from './pages/BlogDetailPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
+import { SitemapPage } from './pages/SitemapPage';
 import { SEOHead } from './components/SEOHead';
 
 import './App.css';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/sitemap.xml" element={<SitemapPage />} />
 
           </Routes>
         </main>

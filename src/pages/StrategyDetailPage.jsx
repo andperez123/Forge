@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge';
 import { ArrowLeft, TrendingUp, Shield, Zap, ExternalLink, Star, Target } from 'lucide-react';
 import { useStrategies } from '../lib/hooks/useFirebase';
+import { SEOHead } from '../components/SEOHead';
 
 export function StrategyDetailPage() {
   const { id } = useParams();
@@ -94,6 +95,15 @@ export function StrategyDetailPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      {strategy && (
+        <SEOHead
+          title={strategy.name}
+          description={strategy.description}
+          keywords={strategy.tags || []}
+          canonicalUrl={`https://forgedefi.com/strategies/${strategy.id}`}
+          ogType="article"
+        />
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
         <Link to="/strategies" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
