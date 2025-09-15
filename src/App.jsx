@@ -6,12 +6,14 @@ import { LandingPage } from './pages/LandingPage';
 import { StrategiesPage } from './pages/StrategiesPage';
 import { StrategyBuilderPage } from './pages/StrategyBuilderPage';
 import { StrategyDetailPage } from './pages/StrategyDetailPage';
+import { StrategyJsonPage } from './pages/StrategyJsonPage';
 import { BlogPage } from './pages/BlogPage';
 import { BlogDetailPage } from './pages/BlogDetailPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminPage } from './pages/AdminPage';
 import { SitemapPage } from './pages/SitemapPage';
+import { AiSitemapPage } from './pages/AiSitemapPage';
 import { SEOHead } from './components/SEOHead';
 
 import './App.css';
@@ -33,7 +35,10 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/sitemap.xml" element={<SitemapPage />} />
-
+            
+            {/* AI JSON endpoints */}
+            <Route path="/ai/:slug.json" element={<StrategyJsonPage />} />
+            <Route path="/ai/sitemap.json" element={<AiSitemapPage />} />
           </Routes>
         </main>
         <Footer />

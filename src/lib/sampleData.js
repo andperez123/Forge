@@ -14,20 +14,101 @@ export const sampleStrategies = [
     category: "Liquid Staking",
     tags: ["Liquid Staking", "Cross-chain", "Low Risk", "High Yield"],
     steps: [
-      "Stake ETH on Lido for stETH",
-      "Bridge stETH to Arbitrum",
-      "Provide liquidity on Curve stETH/ETH pool",
-      "Stake LP tokens on Convex for additional rewards"
+      {
+        title: "Stake ETH on Lido",
+        description: "Deposit your ETH into Lido's liquid staking protocol to receive stETH tokens. This allows you to earn staking rewards while maintaining liquidity.",
+        link: "https://lido.fi"
+      },
+      {
+        title: "Bridge stETH to Arbitrum",
+        description: "Use the official Arbitrum bridge to transfer your stETH tokens to the Arbitrum network, where gas fees are significantly lower.",
+        link: "https://bridge.arbitrum.io"
+      },
+      {
+        title: "Provide Liquidity on Curve",
+        description: "Add your stETH to Curve's stETH/ETH liquidity pool to earn trading fees from users swapping between these assets.",
+        link: "https://curve.fi"
+      },
+      {
+        title: "Stake LP Tokens on Convex",
+        description: "Deposit your Curve LP tokens into Convex to earn additional CRV rewards and boost your overall yield significantly.",
+        link: "https://convexfinance.com"
+      }
     ],
     featured: true,
     timeToSetup: "15 min",
     minInvestment: 100,
     maxInvestment: 1000,
+    fee: "0.25%",
+    lastUpdated: "2025-01-15",
     performance: {
       '7d': 2.1,
       '30d': 8.7,
       '90d': 24.3
-    }
+    },
+    risks: [
+      {
+        type: "Smart Contract Risk",
+        level: "Low",
+        description: "Lido and Curve are well-audited protocols with strong track records."
+      },
+      {
+        type: "Impermanent Loss",
+        level: "Medium",
+        description: "Potential IL when providing liquidity to stETH/ETH pool."
+      },
+      {
+        type: "Bridge Risk",
+        level: "Low",
+        description: "Arbitrum bridge is secure but introduces additional complexity."
+      }
+    ],
+    faq: [
+      {
+        q: "How is APY derived?",
+        a: "APY combines Lido staking rewards (~4-6%), Curve LP fees (~2-4%), and Convex rewards (~20-25%)."
+      },
+      {
+        q: "What's the minimum investment?",
+        a: "Minimum $100 to cover gas costs and ensure meaningful returns."
+      },
+      {
+        q: "How often are rewards distributed?",
+        a: "Lido rewards are continuous, Curve fees are claimable anytime, Convex rewards are distributed weekly."
+      },
+      {
+        q: "Can I exit anytime?",
+        a: "Yes, all positions are liquid and can be withdrawn immediately without lock-up periods."
+      }
+    ],
+    changelog: [
+      {
+        date: "2025-01-15",
+        change: "Updated APY calculation to reflect current market conditions."
+      },
+      {
+        date: "2025-01-10",
+        change: "Added Convex integration for enhanced yield optimization."
+      },
+      {
+        date: "2025-01-05",
+        change: "Initial strategy deployment with Lido and Curve integration."
+      }
+    ],
+    protocolFees: [
+      {
+        protocol: "Lido",
+        amount: "0.1% of staking rewards"
+      },
+      {
+        protocol: "Curve",
+        amount: "0.04% swap fee"
+      },
+      {
+        protocol: "Convex",
+        amount: "0.5% of CRV rewards"
+      }
+    ]
   },
   {
     name: "Curve 3Pool + Convex Strategy",
@@ -40,19 +121,204 @@ export const sampleStrategies = [
     category: "Stablecoin",
     tags: ["Stablecoin", "Low Risk", "Stable Yield"],
     steps: [
-      "Acquire USDC, USDT, and DAI in equal amounts",
-      "Provide liquidity to Curve's 3Pool",
-      "Stake LP tokens on Convex for additional rewards"
+      {
+        title: "Acquire Stablecoins",
+        description: "Obtain equal amounts of USDC, USDT, and DAI. You can purchase these on any major exchange or DEX.",
+        link: "https://uniswap.org"
+      },
+      {
+        title: "Provide Liquidity to Curve 3Pool",
+        description: "Deposit your stablecoins into Curve's 3Pool, which is one of the most liquid and stable pools in DeFi.",
+        link: "https://curve.fi"
+      },
+      {
+        title: "Stake LP Tokens on Convex",
+        description: "Deposit your 3Pool LP tokens into Convex to earn boosted CRV rewards and maximize your yield.",
+        link: "https://convexfinance.com"
+      }
     ],
     featured: false,
     timeToSetup: "10 min",
     minInvestment: 500,
     maxInvestment: 100000,
+    fee: "0.25%",
+    lastUpdated: "2025-01-12",
     performance: {
       '7d': 0.8,
       '30d': 3.2,
       '90d': 9.8
-    }
+    },
+    risks: [
+      {
+        type: "Smart Contract Risk",
+        level: "Low",
+        description: "Curve and Convex are battle-tested protocols with extensive audits."
+      },
+      {
+        type: "Stablecoin Depeg Risk",
+        level: "Low",
+        description: "Risk of USDC, USDT, or DAI losing their peg to USD."
+      },
+      {
+        type: "Regulatory Risk",
+        level: "Medium",
+        description: "Potential regulatory changes affecting stablecoin usage."
+      }
+    ],
+    faq: [
+      {
+        q: "Why is this strategy considered low risk?",
+        a: "Uses only stablecoins and well-established protocols with minimal price volatility exposure."
+      },
+      {
+        q: "What happens if one stablecoin depegs?",
+        a: "The 3Pool mechanism helps maintain balance, but significant depegs could affect returns."
+      },
+      {
+        q: "How liquid is this position?",
+        a: "Very liquid - you can withdraw your funds anytime from Curve's 3Pool."
+      },
+      {
+        q: "What are the main yield sources?",
+        a: "Curve trading fees and Convex CRV rewards from protocol emissions."
+      }
+    ],
+    changelog: [
+      {
+        date: "2025-01-12",
+        change: "Adjusted APY expectations based on current market conditions."
+      },
+      {
+        date: "2025-01-08",
+        change: "Enhanced risk analysis for stablecoin depeg scenarios."
+      },
+      {
+        date: "2025-01-01",
+        change: "Strategy launched with initial Curve 3Pool integration."
+      }
+    ],
+    protocolFees: [
+      {
+        protocol: "Curve",
+        amount: "0.04% swap fee"
+      },
+      {
+        protocol: "Convex",
+        amount: "0.5% of CRV rewards"
+      }
+    ]
+  },
+  {
+    name: "wBTC Yield on Arbitrum",
+    description: "Earn yield on Bitcoin by providing wBTC liquidity on Arbitrum with enhanced rewards through GMX and other DeFi protocols.",
+    apy: 18.5,
+    risk: "Medium",
+    tvl: 8500000,
+    chains: ["Arbitrum"],
+    protocols: ["wBTC", "GMX", "Camelot", "Radiant"],
+    category: "Bitcoin DeFi",
+    tags: ["Bitcoin", "Arbitrum", "Medium Risk", "High Yield"],
+    steps: [
+      {
+        title: "Bridge BTC to Arbitrum",
+        description: "Convert your Bitcoin to wBTC and bridge it to the Arbitrum network for lower gas fees and faster transactions.",
+        link: "https://bridge.arbitrum.io"
+      },
+      {
+        title: "Provide Liquidity on Camelot",
+        description: "Add your wBTC to Camelot DEX liquidity pools to earn trading fees from the growing Arbitrum ecosystem.",
+        link: "https://camelot.exchange"
+      },
+      {
+        title: "Stake on Radiant",
+        description: "Deposit your LP tokens into Radiant Protocol to earn additional yield through their lending and borrowing mechanisms.",
+        link: "https://app.radiant.capital"
+      },
+      {
+        title: "Explore GMX Opportunities",
+        description: "Consider using GMX for leveraged yield farming, but be aware of the increased risk with leverage.",
+        link: "https://gmx.io"
+      }
+    ],
+    featured: true,
+    timeToSetup: "20 min",
+    minInvestment: 250,
+    maxInvestment: 50000,
+    fee: "0.25%",
+    lastUpdated: "2025-01-14",
+    performance: {
+      '7d': 1.2,
+      '30d': 4.8,
+      '90d': 15.2
+    },
+    risks: [
+      {
+        type: "Bitcoin Volatility",
+        level: "High",
+        description: "BTC price movements can significantly impact returns and impermanent loss."
+      },
+      {
+        type: "Bridge Risk",
+        level: "Medium",
+        description: "Risk associated with bridging BTC to Arbitrum network."
+      },
+      {
+        type: "Leverage Risk",
+        level: "High",
+        description: "GMX leveraged positions can amplify both gains and losses."
+      },
+      {
+        type: "Smart Contract Risk",
+        level: "Medium",
+        description: "Newer protocols on Arbitrum may have less battle-testing."
+      }
+    ],
+    faq: [
+      {
+        q: "How does this strategy work with Bitcoin?",
+        a: "wBTC represents Bitcoin on Ethereum/Arbitrum, allowing BTC holders to participate in DeFi without selling."
+      },
+      {
+        q: "What's the impermanent loss risk?",
+        a: "Significant if BTC price moves dramatically while providing liquidity. Consider holding period and BTC outlook."
+      },
+      {
+        q: "Why Arbitrum specifically?",
+        a: "Lower gas fees, faster transactions, and growing DeFi ecosystem with attractive incentives."
+      },
+      {
+        q: "Can I use this with other Bitcoin variants?",
+        a: "Strategy optimized for wBTC, but similar approaches work with renBTC or other Bitcoin bridges."
+      }
+    ],
+    changelog: [
+      {
+        date: "2025-01-14",
+        change: "Added GMX integration for enhanced yield opportunities."
+      },
+      {
+        date: "2025-01-10",
+        change: "Updated risk assessment based on recent market volatility."
+      },
+      {
+        date: "2025-01-05",
+        change: "Strategy launched with initial wBTC and Camelot integration."
+      }
+    ],
+    protocolFees: [
+      {
+        protocol: "Camelot",
+        amount: "0.3% swap fee"
+      },
+      {
+        protocol: "Radiant",
+        amount: "0.1% of rewards"
+      },
+      {
+        protocol: "GMX",
+        amount: "0.1% position fee"
+      }
+    ]
   }
 ];
 

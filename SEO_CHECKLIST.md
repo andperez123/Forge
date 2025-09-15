@@ -12,10 +12,36 @@
 - [x] Structured data (JSON-LD)
 - [x] SEOHead component for dynamic pages
 
+### AI-SEO Implementation ✅
+- [x] **Page Structure with Stable Section IDs**
+  - [x] H1: Strategy name
+  - [x] TL;DR block with 4-6 bullet summary (APY, chains, risks, fees, last update)
+  - [x] Stable section IDs: #summary, #apy-method, #risks, #fees, #how-to, #changelog, #faq
+  - [x] Proper heading hierarchy (H1 → H2 → H3)
+
+- [x] **JSON Mirror Endpoints**
+  - [x] Route: `/ai/:slug.json` for individual strategy JSON
+  - [x] Route: `/ai/sitemap.json` for AI sitemap
+  - [x] Structured JSON response with all required fields
+  - [x] Proper content-type headers
+
+- [x] **Schema Markup (JSON-LD)**
+  - [x] Product schema for strategy cards
+  - [x] HowTo schema for step-by-step guides
+  - [x] FAQPage schema for Q&A sections
+  - [x] AdditionalProperty for APY, risk, chains, etc.
+
+- [x] **Enhanced Content Structure**
+  - [x] FAQ sections with Q&A pairs
+  - [x] Changelog with dated updates
+  - [x] Detailed risk analysis
+  - [x] Fee breakdown and transparency
+  - [x] Protocol-specific information
+
 ### Page-Specific SEO
 - [x] Landing page SEO
 - [x] Strategies page SEO
-- [x] Strategy detail page SEO
+- [x] Strategy detail page SEO (AI-optimized)
 - [x] Blog listing page SEO
 - [x] Blog detail page SEO
 - [x] About page SEO
@@ -28,6 +54,8 @@
 - [x] Proper heading hierarchy
 - [x] Alt text for images
 - [x] Internal linking
+- [x] **AI-Scrapable Content** (no JS-only renders)
+- [x] **Stable Section IDs** (no auto-hashing)
 
 ## 🔧 SEO Improvements Needed
 
@@ -50,8 +78,8 @@
 
 ### 4. Content Optimization
 - [ ] Add more long-tail keywords
-- [ ] Create FAQ sections
-- [ ] Add schema markup for FAQs
+- [ ] **Create FAQ sections** ✅ (Implemented)
+- [ ] **Add schema markup for FAQs** ✅ (Implemented)
 - [ ] Implement breadcrumbs
 
 ### 5. Technical Improvements
@@ -120,6 +148,7 @@
 - Time on page and bounce rate
 - Social media shares and engagement
 - Backlink growth and quality
+- **AI/LLM scraping success** (new metric)
 
 ## 🔍 SEO Audit Tools
 
@@ -130,3 +159,27 @@
 - Ahrefs/SEMrush (for competitor analysis)
 - Google Analytics
 - Core Web Vitals monitoring
+
+## 🤖 AI-SEO Specific Features
+
+### LLM Scraping Optimization
+- [x] **Structured JSON endpoints** for AI consumption
+- [x] **Consistent data format** across all strategies
+- [x] **Machine-readable content** with clear sections
+- [x] **Stable URLs and IDs** for reliable scraping
+- [x] **Comprehensive metadata** for context
+
+### Content Accessibility
+- [x] **No hidden content** behind JavaScript
+- [x] **Clear section headers** with stable IDs
+- [x] **Structured data** for enhanced understanding
+- [x] **Consistent formatting** across all pages
+- [x] **Date and unit information** on all facts
+
+### Strategy Information Completeness
+- [x] **APY ranges** with typical values
+- [x] **Risk assessments** with detailed explanations
+- [x] **Fee structures** with transparency
+- [x] **Step-by-step guides** for implementation
+- [x] **FAQ sections** for common questions
+- [x] **Changelog tracking** for updates

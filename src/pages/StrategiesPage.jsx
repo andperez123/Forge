@@ -75,13 +75,6 @@ export function StrategiesPage() {
     }
   };
 
-  const formatTVL = (tvl) => {
-    if (!tvl) return '$0';
-    if (tvl >= 1000000) {
-      return `$${(tvl / 1000000).toFixed(1)}M`;
-    }
-    return `$${(tvl / 1000).toFixed(0)}K`;
-  };
 
   const handleStrategyClick = (strategyId) => {
     navigate(`/strategies/${strategyId}`);
@@ -112,35 +105,21 @@ export function StrategiesPage() {
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* Key Metrics */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-muted/50 rounded-lg">
-            <div className="text-2xl font-bold text-primary">{strategy.apy || 0}%</div>
-            <div className="text-xs text-muted-foreground">APY</div>
+        {/* Strategy Overview */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="font-medium">Category:</span>
+            <Badge variant="outline">{strategy.category || 'DeFi Strategy'}</Badge>
           </div>
-          <div className="text-center p-3 bg-muted/50 rounded-lg">
-            <div className="text-lg font-semibold text-foreground">{formatTVL(strategy.tvl)}</div>
-            <div className="text-xs text-muted-foreground">TVL</div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="font-medium">Chains:</span>
+            <span>{strategy.chains?.join(", ") || "Multiple"}</span>
           </div>
-          <div className="text-center p-3 bg-muted/50 rounded-lg">
-            <div className="text-lg font-semibold text-foreground">{strategy.chains?.length || 0}</div>
-            <div className="text-xs text-muted-foreground">Chains</div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="font-medium">Setup Time:</span>
+            <span>{strategy.timeToSetup || 'N/A'}</span>
           </div>
         </div>
-
-        {/* Performance */}
-        {strategy.performance && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">7d Performance:</span>
-              <span className="text-green-400">+{strategy.performance['7d'] || 0}%</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">30d Performance:</span>
-              <span className="text-green-400">+{strategy.performance['30d'] || 0}%</span>
-            </div>
-          </div>
-        )}
 
         {/* Tags */}
         {strategy.tags && strategy.tags.length > 0 && (
