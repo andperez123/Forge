@@ -258,30 +258,6 @@ export function StrategyDetailPage() {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="md:col-span-2 space-y-8">
-            {/* Summary Section */}
-            <section id="summary">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {strategy.description}
-                  </p>
-                  {strategy.protocols && strategy.protocols.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="font-semibold mb-2">Protocols Used:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {strategy.protocols.map((protocol) => (
-                          <Badge key={protocol} variant="outline">{protocol}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </section>
-
             {/* Strategy Explanation Section */}
             <section id="strategy-explanation">
               <Card>
@@ -420,48 +396,61 @@ export function StrategyDetailPage() {
                   <CardDescription>Follow these detailed steps to implement this strategy successfully</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {strategy.steps && strategy.steps.length > 0 ? (
-                      strategy.steps.map((step, index) => {
-                        const stepData = typeof step === 'string' ? { title: step, description: '', link: null } : step;
-                        return (
-                          <div key={index} className="relative">
-                            <div className="flex gap-6">
-                              <div className="flex flex-col items-center">
-                                <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg">
-                                  {index + 1}
+                      <div className="grid gap-6">
+                        {strategy.steps.map((step, index) => {
+                          const stepData = typeof step === 'string' ? { title: step, description: '', link: null } : step;
+                          return (
+                            <div key={index} className="relative">
+                              <div className="flex gap-6 items-start">
+                                {/* Step Number Circle */}
+                                <div className="flex-shrink-0">
+                                  <div className="w-16 h-16 bg-gradient-to-br from-primary via-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg border-4 border-white dark:border-gray-800">
+                                    {index + 1}
+                                  </div>
                                 </div>
-                                {index < strategy.steps.length - 1 && (
-                                  <div className="w-0.5 h-16 bg-gradient-to-b from-primary/30 to-accent/30 mt-2"></div>
-                                )}
-                              </div>
-                              <div className="flex-1 pb-8">
-                                <div className="bg-white dark:bg-gray-800 rounded-lg border border-border p-6 shadow-sm">
-                                  <h4 className="font-semibold text-lg mb-3 text-foreground">
-                                    {stepData.title || `Step ${index + 1}`}
-                                  </h4>
-                                  <p className="text-muted-foreground leading-relaxed mb-4">
-                                    {stepData.description || (typeof step === 'string' ? step : step.description || step)}
-                                  </p>
-                                  {stepData.link && (
-                                    <div className="flex items-center gap-2">
-                                      <ExternalLink className="w-4 h-4 text-primary" />
+                                
+                                {/* Step Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-600 shadow-sm">
+                                    <h4 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
+                                      {stepData.title || `Step ${index + 1}`}
+                                    </h4>
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4 text-lg">
+                                      {stepData.description || (typeof step === 'string' ? step : step.description || step)}
+                                    </p>
+                                    
+                                    {/* Action Button */}
+                                    <div className="flex items-center gap-3">
                                       <a 
-                                        href={stepData.link} 
+                                        href={stepData.link || "#"} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className="text-primary hover:text-primary/80 font-medium text-sm"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
                                       >
-                                        Visit {stepData.link.includes('lido') ? 'Lido' : stepData.link.includes('curve') ? 'Curve' : 'Protocol'}
+                                        <ExternalLink className="w-4 h-4" />
+                                        {stepData.link ? 
+                                          `Visit ${stepData.link.includes('lido') ? 'Lido' : stepData.link.includes('curve') ? 'Curve' : stepData.link.includes('convex') ? 'Convex' : stepData.link.includes('arbitrum') ? 'Arbitrum' : 'Protocol'}` : 
+                                          'Get Started'
+                                        }
                                       </a>
+                                      <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded">
+                                        {stepData.link ? 'External Link' : 'Coming Soon'}
+                                      </span>
                                     </div>
-                                  )}
+                                  </div>
                                 </div>
                               </div>
+                              
+                              {/* Connector Line */}
+                              {index < strategy.steps.length - 1 && (
+                                <div className="absolute left-8 top-16 w-0.5 h-8 bg-gradient-to-b from-primary/50 to-accent/50"></div>
+                              )}
                             </div>
-                          </div>
-                        );
-                      })
+                          );
+                        })}
+                      </div>
                     ) : (
                       <div className="text-center py-12 text-muted-foreground">
                         <Target className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -471,29 +460,33 @@ export function StrategyDetailPage() {
                     )}
                     
                     {strategy.steps && strategy.steps.length > 0 && (
-                      <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                        <h4 className="font-semibold mb-3 text-green-900 flex items-center gap-2">
+                      <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-xl">
+                        <h4 className="font-semibold mb-4 text-blue-900 dark:text-blue-100 flex items-center gap-2 text-lg">
                           <Shield className="w-5 h-5" />
-                          Important Notes
+                          Important Safety Notes
                         </h4>
-                        <ul className="space-y-2 text-green-800 text-sm">
-                          <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">•</span>
-                            <span>Always verify contract addresses before interacting with protocols</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">•</span>
-                            <span>Start with small amounts to test the strategy</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">•</span>
-                            <span>Keep track of gas costs and ensure you have sufficient ETH for transactions</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">•</span>
-                            <span>Monitor your positions regularly and adjust as needed</span>
-                          </li>
-                        </ul>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <ul className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
+                            <li className="flex items-start gap-3">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>Always verify contract addresses before interacting with protocols</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>Start with small amounts to test the strategy</span>
+                            </li>
+                          </ul>
+                          <ul className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
+                            <li className="flex items-start gap-3">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>Keep track of gas costs and ensure sufficient ETH for transactions</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>Monitor your positions regularly and adjust as needed</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     )}
                   </div>
