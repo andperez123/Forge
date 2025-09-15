@@ -50,7 +50,11 @@ export function AdminPage() {
   const [newTag, setNewTag] = useState('');
   const [newProtocol, setNewProtocol] = useState('');
   const [newChain, setNewChain] = useState('');
-  const [newStep, setNewStep] = useState('');
+  const [newStep, setNewStep] = useState({
+    title: '',
+    description: '',
+    link: ''
+  });
 
   const handleStrategySubmit = async (e) => {
     e.preventDefault();
@@ -196,19 +200,27 @@ export function AdminPage() {
   };
 
   const addStep = () => {
-    if (newStep.trim()) {
+    if (newStep.title.trim() && newStep.description.trim()) {
       setStrategyForm(prev => ({
         ...prev,
-        steps: [...prev.steps, newStep.trim()]
+        steps: [...prev.steps, {
+          title: newStep.title.trim(),
+          description: newStep.description.trim(),
+          link: newStep.link.trim() || null
+        }]
       }));
-      setNewStep('');
+      setNewStep({
+        title: '',
+        description: '',
+        link: ''
+      });
     }
   };
 
-  const removeStep = (step) => {
+  const removeStep = (stepIndex) => {
     setStrategyForm(prev => ({
       ...prev,
-      steps: prev.steps.filter(s => s !== step)
+      steps: prev.steps.filter((_, index) => index !== stepIndex)
     }));
   };
 
@@ -440,24 +452,64 @@ export function AdminPage() {
 
                 {/* Steps */}
                 <div>
-                  <Label>Steps</Label>
-                  <div className="flex gap-2 mb-2">
-                    <Input
-                      value={newStep}
-                      onChange={(e) => setNewStep(e.target.value)}
-                      placeholder="Add a step"
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStep())}
-                    />
-                    <Button type="button" onClick={addStep} size="sm">
-                      <Plus className="w-4 h-4" />
+                  <Label>Implementation Steps</Label>
+                  <div className="space-y-4 mb-4 p-4 border border-border rounded-lg bg-muted/20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="stepTitle">Step Title</Label>
+                        <Input
+                          id="stepTitle"
+                          value={newStep.title}
+                          onChange={(e) => setNewStep(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="e.g., Stake ETH on Lido"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="stepLink">Step Link (Optional)</Label>
+                        <Input
+                          id="stepLink"
+                          value={newStep.link}
+                          onChange={(e) => setNewStep(prev => ({ ...prev, link: e.target.value }))}
+                          placeholder="https://lido.fi"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="stepDescription">Step Description</Label>
+                      <Textarea
+                        id="stepDescription"
+                        value={newStep.description}
+                        onChange={(e) => setNewStep(prev => ({ ...prev, description: e.target.value }))}
+                        placeholder="Detailed description of what the user needs to do..."
+                        rows={2}
+                      />
+                    </div>
+                    <Button type="button" onClick={addStep} size="sm" className="w-full">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Step
                     </Button>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {strategyForm.steps.map((step, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded">
-                        <span className="text-sm font-medium">{index + 1}.</span>
-                        <span className="flex-1">{step}</span>
-                        <X className="w-4 h-4 cursor-pointer" onClick={() => removeStep(step)} />
+                      <div key={index} className="p-4 bg-muted rounded-lg border">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded">
+                              {index + 1}
+                            </span>
+                            <span className="font-semibold">{step.title}</span>
+                          </div>
+                          <X className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-foreground" onClick={() => removeStep(index)} />
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{step.description}</p>
+                        {step.link && (
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-muted-foreground">Link:</span>
+                            <a href={step.link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                              {step.link}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

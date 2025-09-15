@@ -237,13 +237,6 @@ export function StrategyDetailPage() {
                     <div className="text-sm text-muted-foreground">Risk level</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-purple-600" />
-                  <div>
-                    <div className="font-semibold">{strategy.fee || "0.25%"} fee</div>
-                    <div className="text-sm text-muted-foreground">Forge fee</div>
-                  </div>
-                </div>
               </div>
               {strategy.lastUpdated && (
                 <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
