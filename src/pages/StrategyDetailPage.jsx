@@ -312,79 +312,6 @@ export function StrategyDetailPage() {
               </Card>
             </section>
 
-            {/* Risks Section */}
-            <section id="risks">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-primary" />
-                    Risks
-                  </CardTitle>
-                  <CardDescription>Understanding the risks involved in this strategy</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {strategy.risks && strategy.risks.length > 0 ? (
-                      strategy.risks.map((risk, index) => (
-                        <div key={index} className="flex items-start gap-3 p-4 bg-muted/20 rounded-lg">
-                          <Badge className={getRiskColor(risk.level || risk)}>
-                            {risk.level || risk}
-                          </Badge>
-                          <div>
-                            <h4 className="font-semibold mb-1">{risk.type || 'Risk'}</h4>
-                            <p className="text-muted-foreground text-sm">{risk.description || risk}</p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <Shield className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                        <p>Risk analysis coming soon</p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-
-            {/* Fees Section */}
-            <section id="fees">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5 text-primary" />
-                    Fees
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-muted/20 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold">Forge Fee</span>
-                        <span className="text-lg font-bold text-primary">{strategy.fee || "0.25%"} of gross yield</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Net daily. No hidden fees or lock-up periods.
-                      </p>
-                    </div>
-                    {strategy.protocolFees && (
-                      <div>
-                        <h4 className="font-semibold mb-2">Protocol Fees:</h4>
-                        <div className="space-y-2">
-                          {strategy.protocolFees.map((fee, index) => (
-                            <div key={index} className="flex justify-between text-sm">
-                              <span>{fee.protocol}</span>
-                              <span>{fee.amount}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-
             {/* How-to Section */}
             <section id="how-to">
               <Card>
@@ -486,6 +413,79 @@ export function StrategyDetailPage() {
                               <span>Monitor your positions regularly and adjust as needed</span>
                             </li>
                           </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Risks Section */}
+            <section id="risks">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-primary" />
+                    Risks
+                  </CardTitle>
+                  <CardDescription>Understanding the risks involved in this strategy</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {strategy.risks && strategy.risks.length > 0 ? (
+                      strategy.risks.map((risk, index) => (
+                        <div key={index} className="flex items-start gap-3 p-4 bg-muted/20 rounded-lg">
+                          <Badge className={getRiskColor(risk.level || risk)}>
+                            {risk.level || risk}
+                          </Badge>
+                          <div>
+                            <h4 className="font-semibold mb-1">{risk.type || 'Risk'}</h4>
+                            <p className="text-muted-foreground text-sm">{risk.description || risk}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Shield className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>Risk analysis coming soon</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Fees Section */}
+            <section id="fees">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-primary" />
+                    Fees
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-muted/20 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold">Forge Fee</span>
+                        <span className="text-lg font-bold text-primary">{strategy.fee || "0.25%"} of gross yield</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Net daily. No hidden fees or lock-up periods.
+                      </p>
+                    </div>
+                    {strategy.protocolFees && (
+                      <div>
+                        <h4 className="font-semibold mb-2">Protocol Fees:</h4>
+                        <div className="space-y-2">
+                          {strategy.protocolFees.map((fee, index) => (
+                            <div key={index} className="flex justify-between text-sm">
+                              <span>{fee.protocol}</span>
+                              <span>{fee.amount}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
